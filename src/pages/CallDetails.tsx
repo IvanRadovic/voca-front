@@ -203,6 +203,9 @@ export default function CallDetails() {
                 <button onClick={handleSave} className="btn-secondary w-full">
                   {saved ? `★ ${t('common.saved')}` : `☆ ${t('common.save')}`}
                 </button>
+                {!isAuthenticated && (
+                  <p className="pt-1 text-center text-xs text-gray-400">{t('guest.applyHint')}</p>
+                )}
               </div>
             ) : null}
           </div>

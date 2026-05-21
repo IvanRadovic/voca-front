@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { api } from '../lib/api';
 import { useLanguage } from '../context/LanguageContext';
 import CallCard from '../components/CallCard';
+import GuestBanner from '../components/GuestBanner';
 import Spinner from '../components/ui/Spinner';
 import { CALL_TYPES, CALL_TYPE_LABELS } from '../lib/constants';
 import type { Call, Category, Paginated } from '../types';
@@ -79,6 +80,10 @@ export default function Browse() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
       <h1 className="mb-6 text-2xl font-bold">{t('browse.title')}</h1>
+
+      <div className="mb-6">
+        <GuestBanner />
+      </div>
 
       <form onSubmit={submitSearch} className="mb-6 flex gap-2">
         <input

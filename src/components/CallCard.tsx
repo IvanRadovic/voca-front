@@ -9,11 +9,12 @@ import { CALL_TYPE_LABELS } from '../lib/constants';
 import { formatDate, formatPrice } from '../lib/format';
 
 const GRADIENTS = [
-  'from-brand-500 to-sky-400',
+  'from-sky-500 to-cyan-400',
   'from-rose-500 to-orange-400',
   'from-emerald-500 to-teal-400',
-  'from-violet-500 to-fuchsia-400',
+  'from-blue-600 to-sky-400',
   'from-amber-500 to-yellow-400',
+  'from-teal-500 to-emerald-400',
 ];
 
 export default function CallCard({ call }: { call: Call }) {

@@ -7,6 +7,7 @@ import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import Landing from './pages/Landing';
 import Browse from './pages/Browse';
+import HowItWorks from './pages/HowItWorks';
 import CallDetails from './pages/CallDetails';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
@@ -23,6 +24,7 @@ export default function App() {
                 <Route element={<Layout />}>
                   <Route path="/" element={<Landing />} />
                   <Route path="/calls" element={<Browse />} />
+                  <Route path="/kako-funkcionise" element={<HowItWorks />} />
                   <Route path="/calls/:id" element={<CallDetails />} />
                   <Route
                     path="/dashboard"

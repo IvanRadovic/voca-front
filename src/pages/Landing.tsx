@@ -6,7 +6,11 @@ import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
 import CallCard from '../components/CallCard';
 import Spinner from '../components/ui/Spinner';
-import type { Call, Category, PlatformStats } from '../types';
+import ImageWithFallback from '../components/ui/ImageWithFallback';
+import { CALL_TYPE_LABELS } from '../lib/constants';
+import { categoryImage, HERO_IMAGE, TYPE_IMAGES, FEATURE_IMAGES } from '../lib/images';
+import type { Call, Category, PlatformStats, CallType } from '../types';
+import type { TranslationKey } from '../i18n/translations';
 
 const TESTIMONIALS = [
   {
@@ -24,6 +28,19 @@ const TESTIMONIALS = [
     en: 'The photography workshop was amazing — easy to find and apply in one click.',
     cnr: 'Radionica fotografije bila je sjajna — lako za pronaći i prijaviti u jednom kliku.',
   },
+];
+
+const WHY: { title: TranslationKey; desc: TranslationKey; icon: string }[] = [
+  { title: 'landing.why1Title', desc: 'landing.why1Desc', icon: '✨' },
+  { title: 'landing.why2Title', desc: 'landing.why2Desc', icon: '⚡' },
+  { title: 'landing.why3Title', desc: 'landing.why3Desc', icon: '✓' },
+  { title: 'landing.why4Title', desc: 'landing.why4Desc', icon: '🌐' },
+];
+
+const STEPS: { title: TranslationKey; desc: TranslationKey; img: string }[] = [
+  { title: 'landing.step1Title', desc: 'landing.step1Desc', img: FEATURE_IMAGES.discover },
+  { title: 'landing.step2Title', desc: 'landing.step2Desc', img: FEATURE_IMAGES.apply },
+  { title: 'landing.step3Title', desc: 'landing.step3Desc', img: FEATURE_IMAGES.grow },
 ];
 
 export default function Landing() {
@@ -69,60 +86,113 @@ export default function Landing() {
       ]
     : [];
 
+  const showcaseTypes = Object.keys(TYPE_IMAGES) as CallType[];
+
   return (
     <div className="animate-fade-in">
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-brand-600 via-brand-600 to-brand-800">
-        <div className="mx-auto max-w-6xl px-4 py-20 text-center text-white">
-          <h1 className="mx-auto max-w-3xl text-4xl font-extrabold leading-tight sm:text-5xl">
-            {t('hero.title')}
-          </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-lg text-brand-100">{t('hero.subtitle')}</p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            {!isAuthenticated ? (
-              <>
-                <button onClick={() => openAuth('signup')} className="btn bg-white text-brand-700 hover:bg-brand-50">
-                  {t('hero.ctaYouth')}
+      {/* ---------- Hero (image background) ---------- */}
+      <section className="relative isolate overflow-hidden">
+        <ImageWithFallback
+          src={HERO_IMAGE}
+          alt=""
+          seed={4}
+          className="absolute inset-0 -z-10 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-gray-950/90 via-gray-900/75 to-gray-900/30" />
+        <div className="mx-auto max-w-6xl px-4 py-24 sm:py-32">
+          <div className="max-w-2xl text-white">
+            <span className="chip mb-5 bg-white/15 px-3 py-1 text-sm text-white backdrop-blur">
+              {t('landing.statsNvos')} · {t('landing.statsCalls')} · {t('landing.statsYouth')}
+            </span>
+            <h1 className="text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl">
+              {t('hero.title')}
+            </h1>
+            <p className="mt-5 max-w-xl text-lg text-gray-200">{t('hero.subtitle')}</p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              {!isAuthenticated ? (
+                <>
+                  <button onClick={() => openAuth('signup')} className="btn-primary px-5 py-2.5">
+                    {t('hero.ctaYouth')}
+                  </button>
+                  <button
+                    onClick={() => openAuth('nvo')}
+                    className="btn border border-white/40 bg-white/10 px-5 py-2.5 text-white hover:bg-white/20"
+                  >
+                    {t('hero.ctaNvo')}
+                  </button>
+                </>
+              ) : (
+                <button onClick={() => navigate('/calls')} className="btn-primary px-5 py-2.5">
+                  {t('hero.browse')}
                 </button>
-                <button
-                  onClick={() => openAuth('nvo')}
-                  className="btn border border-white/40 bg-white/10 text-white hover:bg-white/20"
-                >
-                  {t('hero.ctaNvo')}
-                </button>
-              </>
-            ) : (
-              <button onClick={() => navigate('/calls')} className="btn bg-white text-brand-700 hover:bg-brand-50">
-                {t('hero.browse')}
-              </button>
-            )}
-          </div>
-
-          {stats && (
-            <div className="mx-auto mt-12 grid max-w-2xl grid-cols-2 gap-4 sm:grid-cols-4">
-              {statItems.map((s) => (
-                <div key={s.label} className="rounded-xl bg-white/10 p-4 backdrop-blur">
-                  <p className="text-3xl font-extrabold">{s.value}</p>
-                  <p className="text-sm text-brand-100">{s.label}</p>
-                </div>
-              ))}
+              )}
+              <Link
+                to="/kako-funkcionise"
+                className="btn border border-white/40 bg-transparent px-5 py-2.5 text-white hover:bg-white/10"
+              >
+                {t('nav.how')}
+              </Link>
             </div>
-          )}
+          </div>
         </div>
       </section>
 
+      {/* ---------- Stats band ---------- */}
+      {stats && (
+        <section className="border-b border-gray-100 bg-white dark:border-gray-800 dark:bg-gray-950">
+          <div className="mx-auto grid max-w-6xl grid-cols-2 gap-4 px-4 py-8 sm:grid-cols-4">
+            {statItems.map((s) => (
+              <div key={s.label} className="text-center">
+                <p className="text-3xl font-extrabold text-brand-600 sm:text-4xl">{s.value}+</p>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       <div className="mx-auto max-w-6xl px-4">
-        {/* Categories quick filters */}
-        <section className="py-12">
-          <h2 className="mb-5 text-xl font-bold">{t('landing.categories')}</h2>
-          <div className="flex flex-wrap gap-2">
-            {categories.map((c) => (
+        {/* ---------- How it works ---------- */}
+        <section className="py-14">
+          <div className="mb-8 text-center">
+            <h2 className="text-2xl font-bold sm:text-3xl">{t('landing.howTitle')}</h2>
+            <p className="mt-2 text-gray-500 dark:text-gray-400">{t('landing.howSubtitle')}</p>
+          </div>
+          <div className="grid gap-6 md:grid-cols-3">
+            {STEPS.map((step, i) => (
+              <div key={step.title} className="card overflow-hidden">
+                <ImageWithFallback src={step.img} alt={t(step.title)} seed={i} className="h-40 w-full object-cover" />
+                <div className="p-5">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-600 text-sm font-bold text-white">
+                    {i + 1}
+                  </span>
+                  <h3 className="mt-3 font-semibold">{t(step.title)}</h3>
+                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{t(step.desc)}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ---------- Categories with images ---------- */}
+        <section className="py-6">
+          <h2 className="mb-6 text-2xl font-bold sm:text-3xl">{t('landing.categories')}</h2>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {categories.slice(0, 8).map((c, i) => (
               <Link
                 key={c.id}
                 to={`/calls?category=${c.slug}`}
-                className="chip border border-gray-200 px-3 py-1.5 text-sm text-gray-700 transition hover:border-brand-400 hover:text-brand-600 dark:border-gray-700 dark:text-gray-300"
+                className="group relative h-32 overflow-hidden rounded-xl"
               >
-                {c.name}
+                <ImageWithFallback
+                  src={categoryImage(c.slug)}
+                  alt={c.name}
+                  seed={i + 1}
+                  label={c.name}
+                  className="h-full w-full object-cover transition duration-300 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 to-transparent" />
+                <span className="absolute bottom-3 left-3 font-semibold text-white">{c.name}</span>
               </Link>
             ))}
           </div>
@@ -134,11 +204,11 @@ export default function Landing() {
           </div>
         )}
 
-        {/* Recommended */}
+        {/* ---------- Recommended ---------- */}
         {recommended.length > 0 && (
-          <section className="pb-12">
+          <section className="py-12">
             <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-xl font-bold">{t('landing.recommended')}</h2>
+              <h2 className="text-2xl font-bold sm:text-3xl">{t('landing.recommended')}</h2>
               <Link to="/calls" className="text-sm font-medium text-brand-600 hover:underline">
                 {t('common.viewAll')}
               </Link>
@@ -151,11 +221,11 @@ export default function Landing() {
           </section>
         )}
 
-        {/* Latest */}
+        {/* ---------- Latest ---------- */}
         {!loading && latest.length > 0 && (
-          <section className="pb-12">
+          <section className="py-12">
             <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-xl font-bold">{t('landing.latest')}</h2>
+              <h2 className="text-2xl font-bold sm:text-3xl">{t('landing.latest')}</h2>
               <Link to="/calls" className="text-sm font-medium text-brand-600 hover:underline">
                 {t('common.viewAll')}
               </Link>
@@ -167,13 +237,63 @@ export default function Landing() {
             </div>
           </section>
         )}
+      </div>
 
-        {/* Testimonials */}
-        <section className="pb-16">
-          <h2 className="mb-5 text-xl font-bold">{t('landing.testimonials')}</h2>
+      {/* ---------- Opportunity types showcase ---------- */}
+      <section className="bg-gray-50 py-14 dark:bg-gray-900/40">
+        <div className="mx-auto max-w-6xl px-4">
+          <div className="mb-8 text-center">
+            <h2 className="text-2xl font-bold sm:text-3xl">{t('landing.typesTitle')}</h2>
+            <p className="mt-2 text-gray-500 dark:text-gray-400">{t('landing.typesSubtitle')}</p>
+          </div>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+            {showcaseTypes.map((type, i) => (
+              <Link
+                key={type}
+                to={`/calls?type=${type}`}
+                className="group relative h-28 overflow-hidden rounded-xl"
+              >
+                <ImageWithFallback
+                  src={TYPE_IMAGES[type]}
+                  alt={CALL_TYPE_LABELS[type][lang]}
+                  seed={i + 2}
+                  label={CALL_TYPE_LABELS[type][lang]}
+                  className="h-full w-full object-cover transition duration-300 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-950/75 to-transparent" />
+                <span className="absolute bottom-2 left-3 text-sm font-semibold text-white">
+                  {CALL_TYPE_LABELS[type][lang]}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <div className="mx-auto max-w-6xl px-4">
+        {/* ---------- Why Voca ---------- */}
+        <section className="py-14">
+          <h2 className="mb-8 text-center text-2xl font-bold sm:text-3xl">{t('landing.whyTitle')}</h2>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {WHY.map((f) => (
+              <div key={f.title} className="card p-6">
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-xl dark:bg-brand-900/30">
+                  {f.icon}
+                </span>
+                <h3 className="mt-4 font-semibold">{t(f.title)}</h3>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{t(f.desc)}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ---------- Testimonials ---------- */}
+        <section className="pb-14">
+          <h2 className="mb-8 text-center text-2xl font-bold sm:text-3xl">{t('landing.testimonials')}</h2>
           <div className="grid gap-5 sm:grid-cols-3">
             {TESTIMONIALS.map((tm) => (
               <div key={tm.name} className="card p-6">
+                <div className="mb-2 text-amber-500">★★★★★</div>
                 <p className="text-gray-600 dark:text-gray-300">“{lang === 'cnr' ? tm.cnr : tm.en}”</p>
                 <p className="mt-4 text-sm font-semibold text-brand-600">{tm.name}</p>
               </div>
@@ -181,6 +301,33 @@ export default function Landing() {
           </div>
         </section>
       </div>
+
+      {/* ---------- CTA band ---------- */}
+      <section className="bg-brand-600">
+        <div className="mx-auto max-w-4xl px-4 py-16 text-center text-white">
+          <h2 className="text-3xl font-extrabold">{t('landing.ctaTitle')}</h2>
+          <p className="mt-3 text-brand-100">{t('landing.ctaSubtitle')}</p>
+          <div className="mt-7 flex flex-wrap justify-center gap-3">
+            {isAuthenticated ? (
+              <button onClick={() => navigate('/calls')} className="btn bg-white px-6 py-2.5 text-brand-700 hover:bg-brand-50">
+                {t('hero.browse')}
+              </button>
+            ) : (
+              <>
+                <button onClick={() => openAuth('signup')} className="btn bg-white px-6 py-2.5 text-brand-700 hover:bg-brand-50">
+                  {t('hero.ctaYouth')}
+                </button>
+                <button
+                  onClick={() => openAuth('nvo')}
+                  className="btn border border-white/40 bg-white/10 px-6 py-2.5 text-white hover:bg-white/20"
+                >
+                  {t('hero.ctaNvo')}
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

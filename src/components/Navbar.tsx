@@ -38,6 +38,9 @@ export default function Navbar() {
           <NavLink to="/calls" className={linkClass}>
             {t('nav.calls')}
           </NavLink>
+          <NavLink to="/kako-funkcionise" className={linkClass}>
+            {t('nav.how')}
+          </NavLink>
           {isAuthenticated && isNvo && (
             <NavLink to="/dashboard" className={linkClass}>
               {t('nav.dashboard')}
