@@ -1,4 +1,4 @@
-# Voca — Frontend (React + Vite + TypeScript + Tailwind)
+# Voca - Frontend (React + Vite + TypeScript + Tailwind)
 
 Single-page app for **Voca**, a platform connecting young people (15–30) with
 opportunities published by NGOs. Talks to the `voca-back` Laravel API.
@@ -44,8 +44,8 @@ npm run preview    # preview the production build
 
 With the backend seeded, log in (password **`password`** for all):
 
-- **Youth**: `ana@voca.test` — personalized feed, applications, wishlist, reviews
-- **NGO**: `nvo@voca.test` — dashboard, create/edit calls, manage applicants
+- **Youth**: `ana@voca.test` - personalized feed, applications, wishlist, reviews
+- **NGO**: `nvo@voca.test` - dashboard, create/edit calls, manage applicants
 
 ## Project structure
 

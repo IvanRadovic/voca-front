@@ -1,23 +1,29 @@
 // Date / value formatting helpers.
 
-export function formatDate(value: string | null, locale = 'en'): string {
-  if (!value) return '—';
-  return new Date(value).toLocaleDateString(locale === 'cnr' ? 'sr-Latn-ME' : 'en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  });
+export function formatDate(value: string | null, locale = "en"): string {
+  if (!value) return "-";
+  return new Date(value).toLocaleDateString(
+    locale === "cnr" ? "sr-Latn-ME" : "en-GB",
+    {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    },
+  );
 }
 
-export function formatDateTime(value: string | null, locale = 'en'): string {
-  if (!value) return '—';
-  return new Date(value).toLocaleString(locale === 'cnr' ? 'sr-Latn-ME' : 'en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+export function formatDateTime(value: string | null, locale = "en"): string {
+  if (!value) return "-";
+  return new Date(value).toLocaleString(
+    locale === "cnr" ? "sr-Latn-ME" : "en-GB",
+    {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    },
+  );
 }
 
 export function isPast(value: string | null): boolean {
@@ -31,9 +37,9 @@ export function formatPrice(price: number, freeLabel: string): string {
 
 export function initials(name: string): string {
   return name
-    .split(' ')
+    .split(" ")
     .filter(Boolean)
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase())
-    .join('');
+    .join("");
 }

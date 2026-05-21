@@ -1,4 +1,9 @@
-import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
+import {
+  Listbox,
+  ListboxButton,
+  ListboxOption,
+  ListboxOptions,
+} from "@headlessui/react";
 
 export interface SelectOption {
   value: string;
@@ -18,13 +23,28 @@ interface SelectProps {
 }
 
 const ChevronIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    className="text-gray-400"
+  >
     <path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
 const CheckIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+  >
     <path d="M20 6 9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
@@ -33,10 +53,10 @@ export default function Select({
   value,
   onChange,
   options,
-  placeholder = '—',
+  placeholder = "-",
   disabled,
   clearable,
-  clearLabel = 'All',
+  clearLabel = "All",
   id,
 }: SelectProps) {
   const selected = options.find((o) => o.value === value);
@@ -48,7 +68,9 @@ export default function Select({
           id={id}
           className="input flex items-center justify-between gap-2 text-left disabled:opacity-60"
         >
-          <span className={selected ? '' : 'text-gray-400'}>{selected ? selected.label : placeholder}</span>
+          <span className={selected ? "" : "text-gray-400"}>
+            {selected ? selected.label : placeholder}
+          </span>
           <ChevronIcon />
         </ListboxButton>
 
@@ -73,7 +95,15 @@ export default function Select({
             >
               {({ selected: isSel }) => (
                 <>
-                  <span className={isSel ? 'font-medium text-brand-700 dark:text-brand-300' : ''}>{opt.label}</span>
+                  <span
+                    className={
+                      isSel
+                        ? "font-medium text-brand-700 dark:text-brand-300"
+                        : ""
+                    }
+                  >
+                    {opt.label}
+                  </span>
                   {isSel && (
                     <span className="text-brand-600">
                       <CheckIcon />

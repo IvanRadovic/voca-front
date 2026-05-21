@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { useLanguage } from '../context/LanguageContext';
-import { useModal } from '../context/ModalContext';
-import { useCall, useCallFeedbacks, useSimilarCalls } from '../hooks/queries';
-import { useApply, useToggleSave } from '../hooks/mutations';
-import { extractError } from '../lib/api';
-import CallCard from '../components/CallCard';
-import Spinner, { PageSpinner } from '../components/ui/Spinner';
-import Avatar from '../components/ui/Avatar';
-import { CALL_TYPE_LABELS, PREREQUISITES } from '../lib/constants';
-import { formatDate, formatDateTime, formatPrice, isPast } from '../lib/format';
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
+import { useModal } from "../context/ModalContext";
+import { useCall, useCallFeedbacks, useSimilarCalls } from "../hooks/queries";
+import { useApply, useToggleSave } from "../hooks/mutations";
+import { extractError } from "../lib/api";
+import CallCard from "../components/CallCard";
+import Spinner, { PageSpinner } from "../components/ui/Spinner";
+import Avatar from "../components/ui/Avatar";
+import { CALL_TYPE_LABELS, PREREQUISITES } from "../lib/constants";
+import { formatDate, formatDateTime, formatPrice, isPast } from "../lib/format";
 
 export default function CallDetails() {
   const { id } = useParams();
@@ -21,7 +21,7 @@ export default function CallDetails() {
   const { data: call, isLoading } = useCall(id);
   const { data: similar = [] } = useSimilarCalls(id);
   const { data: feedbacks = [] } = useCallFeedbacks(id);
-  const apply = useApply(id ?? '');
+  const apply = useApply(id ?? "");
   const toggleSave = useToggleSave();
 
   const [applied, setApplied] = useState(false);
@@ -36,25 +36,35 @@ export default function CallDetails() {
   }, [call]);
 
   if (isLoading) return <PageSpinner />;
-  if (!call) return <div className="py-20 text-center text-gray-500">{t('common.noResults')}</div>;
+  if (!call)
+    return (
+      <div className="py-20 text-center text-gray-500">
+        {t("common.noResults")}
+      </div>
+    );
 
-  const deadlinePassed = isPast(call.application_deadline) || call.status !== 'active';
+  const deadlinePassed =
+    isPast(call.application_deadline) || call.status !== "active";
   const typeLabel = CALL_TYPE_LABELS[call.type]?.[lang] ?? call.type;
 
   const handleApply = () => {
-    if (!isAuthenticated) return openAuth('login');
+    if (!isAuthenticated) return openAuth("login");
     setNotice(null);
     apply.mutate(undefined, {
       onSuccess: () => {
         setApplied(true);
-        setNotice(lang === 'cnr' ? 'Uspješno ste se prijavili!' : 'You have applied successfully!');
+        setNotice(
+          lang === "cnr"
+            ? "Uspješno ste se prijavili!"
+            : "You have applied successfully!",
+        );
       },
       onError: (err) => setNotice(extractError(err)),
     });
   };
 
   const handleSave = () => {
-    if (!isAuthenticated) return openAuth('login');
+    if (!isAuthenticated) return openAuth("login");
     toggleSave.mutate(call.id, { onSuccess: (data) => setSaved(data.saved) });
   };
 
@@ -62,10 +72,16 @@ export default function CallDetails() {
     <div className="mx-auto max-w-5xl px-4 py-8 animate-fade-in">
       <div className="relative mb-6 h-64 overflow-hidden rounded-2xl sm:h-80">
         {call.image ? (
-          <img src={call.image} alt={call.title} className="h-full w-full object-cover" />
+          <img
+            src={call.image}
+            alt={call.title}
+            className="h-full w-full object-cover"
+          />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-500 to-sky-400">
-            <span className="text-4xl font-extrabold text-white/90">{typeLabel}</span>
+            <span className="text-4xl font-extrabold text-white/90">
+              {typeLabel}
+            </span>
           </div>
         )}
       </div>
@@ -73,18 +89,27 @@ export default function CallDetails() {
       <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
         <div>
           <div className="mb-3 flex flex-wrap items-center gap-2">
-            <span className="chip bg-brand-100 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300">{typeLabel}</span>
+            <span className="chip bg-brand-100 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300">
+              {typeLabel}
+            </span>
             {call.categories?.map((c) => (
-              <span key={c.id} className="chip bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+              <span
+                key={c.id}
+                className="chip bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300"
+              >
                 {c.name}
               </span>
             ))}
           </div>
 
           <h1 className="text-3xl font-extrabold">{call.title}</h1>
-          {call.subtitle && <p className="mt-2 text-lg text-gray-500 dark:text-gray-400">{call.subtitle}</p>}
+          {call.subtitle && (
+            <p className="mt-2 text-lg text-gray-500 dark:text-gray-400">
+              {call.subtitle}
+            </p>
+          )}
 
-          <h2 className="mb-2 mt-8 text-lg font-bold">{t('detail.about')}</h2>
+          <h2 className="mb-2 mt-8 text-lg font-bold">{t("detail.about")}</h2>
           <div
             className="prose prose-sm max-w-none text-gray-700 dark:prose-invert dark:text-gray-300"
             dangerouslySetInnerHTML={{ __html: call.description }}
@@ -92,12 +117,17 @@ export default function CallDetails() {
 
           {call.prerequisites.length > 0 && (
             <div className="mt-6">
-              <h3 className="mb-2 font-semibold">{t('detail.prerequisites')}</h3>
+              <h3 className="mb-2 font-semibold">
+                {t("detail.prerequisites")}
+              </h3>
               <ul className="flex flex-wrap gap-2">
                 {call.prerequisites.map((p) => {
                   const meta = PREREQUISITES.find((x) => x.value === p);
                   return (
-                    <li key={p} className="chip bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                    <li
+                      key={p}
+                      className="chip bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300"
+                    >
                       {meta ? meta[lang] : p}
                     </li>
                   );
@@ -108,23 +138,33 @@ export default function CallDetails() {
 
           <div className="mt-10">
             <h2 className="mb-4 text-lg font-bold">
-              {t('detail.reviews')}{' '}
-              {feedbacks.length > 0 && <span className="text-amber-500">★ {call.average_rating}</span>}
+              {t("detail.reviews")}{" "}
+              {feedbacks.length > 0 && (
+                <span className="text-amber-500">★ {call.average_rating}</span>
+              )}
             </h2>
             {feedbacks.length === 0 ? (
-              <p className="text-sm text-gray-400">{t('common.noResults')}</p>
+              <p className="text-sm text-gray-400">{t("common.noResults")}</p>
             ) : (
               <div className="space-y-4">
                 {feedbacks.map((fb) => (
                   <div key={fb.id} className="card p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Avatar name={fb.user?.name ?? '?'} size={32} />
-                        <span className="text-sm font-medium">{fb.user?.name}</span>
+                        <Avatar name={fb.user?.name ?? "?"} size={32} />
+                        <span className="text-sm font-medium">
+                          {fb.user?.name}
+                        </span>
                       </div>
-                      <span className="text-amber-500">{'★'.repeat(fb.rating)}</span>
+                      <span className="text-amber-500">
+                        {"★".repeat(fb.rating)}
+                      </span>
                     </div>
-                    {fb.comment && <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{fb.comment}</p>}
+                    {fb.comment && (
+                      <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                        {fb.comment}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>
@@ -135,15 +175,35 @@ export default function CallDetails() {
         <aside className="space-y-4">
           <div className="card sticky top-20 p-5">
             <div className="mb-4 flex items-baseline justify-between">
-              <span className="text-2xl font-extrabold text-brand-600">{formatPrice(call.price, t('common.free'))}</span>
-              {call.average_rating > 0 && <span className="text-amber-500">★ {call.average_rating}</span>}
+              <span className="text-2xl font-extrabold text-brand-600">
+                {formatPrice(call.price, t("common.free"))}
+              </span>
+              {call.average_rating > 0 && (
+                <span className="text-amber-500">★ {call.average_rating}</span>
+              )}
             </div>
 
             <dl className="space-y-3 text-sm">
-              <Row label={t('common.deadline')} value={formatDateTime(call.application_deadline, lang)} />
-              <Row label={lang === 'cnr' ? 'Početak' : 'Starts'} value={formatDate(call.start_date, lang)} />
-              <Row label={t('browse.location')} value={call.is_online ? t('common.online') : call.location ?? '—'} />
-              {call.max_participants && <Row label={t('detail.participants')} value={String(call.max_participants)} />}
+              <Row
+                label={t("common.deadline")}
+                value={formatDateTime(call.application_deadline, lang)}
+              />
+              <Row
+                label={lang === "cnr" ? "Početak" : "Starts"}
+                value={formatDate(call.start_date, lang)}
+              />
+              <Row
+                label={t("browse.location")}
+                value={
+                  call.is_online ? t("common.online") : (call.location ?? "-")
+                }
+              />
+              {call.max_participants && (
+                <Row
+                  label={t("detail.participants")}
+                  value={String(call.max_participants)}
+                />
+              )}
             </dl>
 
             {notice && (
@@ -154,30 +214,40 @@ export default function CallDetails() {
 
             {(isYouth || !isAuthenticated) && (
               <div className="mt-5 space-y-2">
-                <button onClick={handleApply} disabled={applied || deadlinePassed || apply.isPending} className="btn-primary w-full">
+                <button
+                  onClick={handleApply}
+                  disabled={applied || deadlinePassed || apply.isPending}
+                  className="btn-primary w-full"
+                >
                   {apply.isPending ? (
                     <Spinner className="h-4 w-4 text-white" />
                   ) : applied ? (
-                    t('common.applied')
+                    t("common.applied")
                   ) : deadlinePassed ? (
-                    t('detail.deadlinePassed')
+                    t("detail.deadlinePassed")
                   ) : !isAuthenticated ? (
-                    t('detail.loginToApply')
+                    t("detail.loginToApply")
                   ) : (
-                    t('detail.applyNow')
+                    t("detail.applyNow")
                   )}
                 </button>
                 <button onClick={handleSave} className="btn-secondary w-full">
-                  {saved ? `★ ${t('common.saved')}` : `☆ ${t('common.save')}`}
+                  {saved ? `★ ${t("common.saved")}` : `☆ ${t("common.save")}`}
                 </button>
-                {!isAuthenticated && <p className="pt-1 text-center text-xs text-gray-400">{t('guest.applyHint')}</p>}
+                {!isAuthenticated && (
+                  <p className="pt-1 text-center text-xs text-gray-400">
+                    {t("guest.applyHint")}
+                  </p>
+                )}
               </div>
             )}
           </div>
 
           {call.nvo && (
             <div className="card p-5">
-              <p className="mb-1 text-xs uppercase tracking-wide text-gray-400">{t('detail.organizer')}</p>
+              <p className="mb-1 text-xs uppercase tracking-wide text-gray-400">
+                {t("detail.organizer")}
+              </p>
               <div className="flex items-center gap-3">
                 <Avatar name={call.nvo.organization_name} size={40} />
                 <div>
@@ -198,7 +268,7 @@ export default function CallDetails() {
 
       {similar.length > 0 && (
         <section className="mt-12">
-          <h2 className="mb-5 text-xl font-bold">{t('detail.similar')}</h2>
+          <h2 className="mb-5 text-xl font-bold">{t("detail.similar")}</h2>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {similar.map((s) => (
               <CallCard key={s.id} call={s} />
