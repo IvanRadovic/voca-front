@@ -1,15 +1,13 @@
-import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { api } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
+import { useCalls, useCategories, useFeed, usePlatformStats } from '../hooks/queries';
 import CallCard from '../components/CallCard';
 import PartnersSlider from '../components/PartnersSlider';
 import Spinner from '../components/ui/Spinner';
 import ImageWithFallback from '../components/ui/ImageWithFallback';
 import { categoryImage, HERO_ILLUSTRATION, FEATURE_IMAGES } from '../lib/images';
-import type { Call, Category, PlatformStats } from '../types';
 import type { TranslationKey } from '../i18n/translations';
 
 const TESTIMONIALS = [
@@ -49,33 +47,11 @@ export default function Landing() {
   const { openAuth } = useModal();
   const navigate = useNavigate();
 
-  const [stats, setStats] = useState<PlatformStats | null>(null);
-  const [latest, setLatest] = useState<Call[]>([]);
-  const [recommended, setRecommended] = useState<Call[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const [statsRes, callsRes, catRes] = await Promise.all([
-          api.get('/stats'),
-          api.get('/calls', { params: { per_page: 8 } }),
-          api.get('/categories'),
-        ]);
-        setStats(statsRes.data);
-        setLatest(callsRes.data.data);
-        setCategories(catRes.data.data);
-        if (isAuthenticated && isYouth) {
-          const feed = await api.get('/feed', { params: { per_page: 4 } });
-          setRecommended(feed.data.data);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, [isAuthenticated, isYouth]);
+  const { data: stats } = usePlatformStats();
+  const { data: categories = [] } = useCategories();
+  const { data: latestPage, isLoading: loading } = useCalls({ per_page: 8 });
+  const latest = latestPage?.data ?? [];
+  const { data: recommended = [] } = useFeed(isAuthenticated && isYouth);
 
   const statItems = stats
     ? [

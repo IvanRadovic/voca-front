@@ -1,23 +1,25 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { api } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useNvoCalls, useNvoStats } from '../hooks/queries';
+import { useDeleteCall, useUpdateNvo } from '../hooks/mutations';
 import Modal from '../components/ui/Modal';
 import Spinner from '../components/ui/Spinner';
 import CallForm from '../components/CallForm';
 import ApplicantsPanel from '../components/ApplicantsPanel';
 import { CALL_TYPE_LABELS } from '../lib/constants';
 import { formatDate } from '../lib/format';
-import type { Call, NvoStats } from '../types';
+import type { Call } from '../types';
 
 export default function Dashboard() {
-  const { user, refresh } = useAuth();
+  const { user } = useAuth();
   const { t, lang } = useLanguage();
 
-  const [stats, setStats] = useState<NvoStats | null>(null);
-  const [calls, setCalls] = useState<Call[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: stats } = useNvoStats();
+  const { data: calls = [], isPending } = useNvoCalls();
+  const deleteCall = useDeleteCall();
+  const updateNvo = useUpdateNvo();
 
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Call | null>(null);
@@ -26,42 +28,24 @@ export default function Dashboard() {
   const [intro, setIntro] = useState(user?.nvo?.intro_message ?? '');
   const [introSaved, setIntroSaved] = useState(false);
 
-  const loadAll = async () => {
-    setLoading(true);
-    try {
-      const [statsRes, callsRes] = await Promise.all([api.get('/nvo/stats'), api.get('/nvo/calls')]);
-      setStats(statsRes.data);
-      setCalls(callsRes.data.data);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadAll();
-  }, []);
-
   useEffect(() => {
     setIntro(user?.nvo?.intro_message ?? '');
   }, [user]);
 
-  const saveIntro = async () => {
-    await api.put('/profile/nvo', { intro_message: intro });
-    setIntroSaved(true);
-    refresh();
-    setTimeout(() => setIntroSaved(false), 2000);
-  };
+  const saveIntro = () =>
+    updateNvo.mutate(
+      { intro_message: intro },
+      {
+        onSuccess: () => {
+          setIntroSaved(true);
+          setTimeout(() => setIntroSaved(false), 2000);
+        },
+      },
+    );
 
-  const deleteCall = async (call: Call) => {
+  const onDelete = (call: Call) => {
     if (!confirm(`${t('dashboard.delete')}: ${call.title}?`)) return;
-    await api.delete(`/calls/${call.id}`);
-    setCalls((p) => p.filter((c) => c.id !== call.id));
-  };
-
-  const onFormSuccess = () => {
-    setFormOpen(false);
-    setEditing(null);
-    loadAll();
+    deleteCall.mutate(call.id);
   };
 
   const statCards = stats
@@ -91,7 +75,6 @@ export default function Dashboard() {
         </button>
       </div>
 
-      {/* Stats */}
       <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
         {statCards.map((s) => (
           <div key={s.label} className="card p-5">
@@ -102,10 +85,9 @@ export default function Dashboard() {
       </div>
 
       <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
-        {/* My calls table */}
         <div>
           <h2 className="mb-4 text-lg font-bold">{t('dashboard.myCalls')}</h2>
-          {loading ? (
+          {isPending ? (
             <Spinner className="mx-auto mt-10 h-7 w-7" />
           ) : calls.length === 0 ? (
             <div className="card p-10 text-center text-gray-500">{t('common.noResults')}</div>
@@ -139,7 +121,7 @@ export default function Dashboard() {
                     >
                       {t('dashboard.edit')}
                     </button>
-                    <button onClick={() => deleteCall(call)} className="btn-ghost text-xs text-rose-600">
+                    <button onClick={() => onDelete(call)} className="btn-ghost text-xs text-rose-600">
                       {t('dashboard.delete')}
                     </button>
                   </div>
@@ -149,12 +131,11 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* Sidebar: intro + recent feedback */}
         <aside className="space-y-6">
           <div className="card p-5">
             <h3 className="mb-2 font-semibold">{t('dashboard.intro')}</h3>
             <textarea className="input" rows={4} value={intro} onChange={(e) => setIntro(e.target.value)} />
-            <button onClick={saveIntro} className="btn-primary mt-2 w-full text-sm">
+            <button onClick={saveIntro} disabled={updateNvo.isPending} className="btn-primary mt-2 w-full text-sm">
               {introSaved ? '✓' : t('profile.save')}
             </button>
           </div>
@@ -180,14 +161,11 @@ export default function Dashboard() {
         </aside>
       </div>
 
-      {/* Create / edit modal */}
       {formOpen && (
         <Modal open onClose={() => setFormOpen(false)} maxWidth="max-w-2xl">
-          <h2 className="mb-4 text-lg font-bold">
-            {editing ? t('dashboard.edit') : t('dashboard.newCall')}
-          </h2>
+          <h2 className="mb-4 text-lg font-bold">{editing ? t('dashboard.edit') : t('dashboard.newCall')}</h2>
           <div className="max-h-[75vh] overflow-y-auto pr-1">
-            <CallForm initial={editing} onSuccess={onFormSuccess} onCancel={() => setFormOpen(false)} />
+            <CallForm initial={editing} onSuccess={() => setFormOpen(false)} onCancel={() => setFormOpen(false)} />
           </div>
         </Modal>
       )}

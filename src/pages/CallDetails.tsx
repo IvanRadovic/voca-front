@@ -1,15 +1,16 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { api, extractError } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
+import { useCall, useCallFeedbacks, useSimilarCalls } from '../hooks/queries';
+import { useApply, useToggleSave } from '../hooks/mutations';
+import { extractError } from '../lib/api';
 import CallCard from '../components/CallCard';
 import Spinner, { PageSpinner } from '../components/ui/Spinner';
 import Avatar from '../components/ui/Avatar';
 import { CALL_TYPE_LABELS, PREREQUISITES } from '../lib/constants';
 import { formatDate, formatDateTime, formatPrice, isPast } from '../lib/format';
-import type { Call, Feedback } from '../types';
 
 export default function CallDetails() {
   const { id } = useParams();
@@ -17,68 +18,48 @@ export default function CallDetails() {
   const { t, lang } = useLanguage();
   const { openAuth } = useModal();
 
-  const [call, setCall] = useState<Call | null>(null);
-  const [similar, setSimilar] = useState<Call[]>([]);
-  const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: call, isLoading } = useCall(id);
+  const { data: similar = [] } = useSimilarCalls(id);
+  const { data: feedbacks = [] } = useCallFeedbacks(id);
+  const apply = useApply(id ?? '');
+  const toggleSave = useToggleSave();
+
   const [applied, setApplied] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [actionPending, setActionPending] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    try {
-      const [callRes, similarRes, fbRes] = await Promise.all([
-        api.get(`/calls/${id}`),
-        api.get(`/calls/${id}/similar`),
-        api.get(`/calls/${id}/feedbacks`),
-      ]);
-      const c: Call = callRes.data.data;
-      setCall(c);
-      setApplied(!!c.has_applied);
-      setSaved(!!c.is_saved);
-      setSimilar(similarRes.data.data);
-      setFeedbacks(fbRes.data.data);
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
-
   useEffect(() => {
-    load();
-  }, [load]);
+    if (call) {
+      setApplied(!!call.has_applied);
+      setSaved(!!call.is_saved);
+    }
+  }, [call]);
 
-  if (loading) return <PageSpinner />;
+  if (isLoading) return <PageSpinner />;
   if (!call) return <div className="py-20 text-center text-gray-500">{t('common.noResults')}</div>;
 
   const deadlinePassed = isPast(call.application_deadline) || call.status !== 'active';
   const typeLabel = CALL_TYPE_LABELS[call.type]?.[lang] ?? call.type;
 
-  const handleApply = async () => {
+  const handleApply = () => {
     if (!isAuthenticated) return openAuth('login');
-    setActionPending(true);
     setNotice(null);
-    try {
-      await api.post(`/calls/${call.id}/apply`);
-      setApplied(true);
-      setNotice(lang === 'cnr' ? 'Uspješno ste se prijavili!' : 'You have applied successfully!');
-    } catch (err) {
-      setNotice(extractError(err));
-    } finally {
-      setActionPending(false);
-    }
+    apply.mutate(undefined, {
+      onSuccess: () => {
+        setApplied(true);
+        setNotice(lang === 'cnr' ? 'Uspješno ste se prijavili!' : 'You have applied successfully!');
+      },
+      onError: (err) => setNotice(extractError(err)),
+    });
   };
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (!isAuthenticated) return openAuth('login');
-    const { data } = await api.post(`/calls/${call.id}/save`);
-    setSaved(data.saved);
+    toggleSave.mutate(call.id, { onSuccess: (data) => setSaved(data.saved) });
   };
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 animate-fade-in">
-      {/* Hero image */}
       <div className="relative mb-6 h-64 overflow-hidden rounded-2xl sm:h-80">
         {call.image ? (
           <img src={call.image} alt={call.title} className="h-full w-full object-cover" />
@@ -92,9 +73,7 @@ export default function CallDetails() {
       <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
         <div>
           <div className="mb-3 flex flex-wrap items-center gap-2">
-            <span className="chip bg-brand-100 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300">
-              {typeLabel}
-            </span>
+            <span className="chip bg-brand-100 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300">{typeLabel}</span>
             {call.categories?.map((c) => (
               <span key={c.id} className="chip bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300">
                 {c.name}
@@ -127,10 +106,10 @@ export default function CallDetails() {
             </div>
           )}
 
-          {/* Reviews */}
           <div className="mt-10">
             <h2 className="mb-4 text-lg font-bold">
-              {t('detail.reviews')} {feedbacks.length > 0 && <span className="text-amber-500">★ {call.average_rating}</span>}
+              {t('detail.reviews')}{' '}
+              {feedbacks.length > 0 && <span className="text-amber-500">★ {call.average_rating}</span>}
             </h2>
             {feedbacks.length === 0 ? (
               <p className="text-sm text-gray-400">{t('common.noResults')}</p>
@@ -153,26 +132,18 @@ export default function CallDetails() {
           </div>
         </div>
 
-        {/* Sidebar */}
         <aside className="space-y-4">
           <div className="card sticky top-20 p-5">
             <div className="mb-4 flex items-baseline justify-between">
-              <span className="text-2xl font-extrabold text-brand-600">
-                {formatPrice(call.price, t('common.free'))}
-              </span>
+              <span className="text-2xl font-extrabold text-brand-600">{formatPrice(call.price, t('common.free'))}</span>
               {call.average_rating > 0 && <span className="text-amber-500">★ {call.average_rating}</span>}
             </div>
 
             <dl className="space-y-3 text-sm">
               <Row label={t('common.deadline')} value={formatDateTime(call.application_deadline, lang)} />
               <Row label={lang === 'cnr' ? 'Početak' : 'Starts'} value={formatDate(call.start_date, lang)} />
-              <Row
-                label={t('browse.location')}
-                value={call.is_online ? t('common.online') : call.location ?? '—'}
-              />
-              {call.max_participants && (
-                <Row label={t('detail.participants')} value={String(call.max_participants)} />
-              )}
+              <Row label={t('browse.location')} value={call.is_online ? t('common.online') : call.location ?? '—'} />
+              {call.max_participants && <Row label={t('detail.participants')} value={String(call.max_participants)} />}
             </dl>
 
             {notice && (
@@ -181,14 +152,10 @@ export default function CallDetails() {
               </div>
             )}
 
-            {isYouth || !isAuthenticated ? (
+            {(isYouth || !isAuthenticated) && (
               <div className="mt-5 space-y-2">
-                <button
-                  onClick={handleApply}
-                  disabled={applied || deadlinePassed || actionPending}
-                  className="btn-primary w-full"
-                >
-                  {actionPending ? (
+                <button onClick={handleApply} disabled={applied || deadlinePassed || apply.isPending} className="btn-primary w-full">
+                  {apply.isPending ? (
                     <Spinner className="h-4 w-4 text-white" />
                   ) : applied ? (
                     t('common.applied')
@@ -203,14 +170,11 @@ export default function CallDetails() {
                 <button onClick={handleSave} className="btn-secondary w-full">
                   {saved ? `★ ${t('common.saved')}` : `☆ ${t('common.save')}`}
                 </button>
-                {!isAuthenticated && (
-                  <p className="pt-1 text-center text-xs text-gray-400">{t('guest.applyHint')}</p>
-                )}
+                {!isAuthenticated && <p className="pt-1 text-center text-xs text-gray-400">{t('guest.applyHint')}</p>}
               </div>
-            ) : null}
+            )}
           </div>
 
-          {/* Organizer */}
           {call.nvo && (
             <div className="card p-5">
               <p className="mb-1 text-xs uppercase tracking-wide text-gray-400">{t('detail.organizer')}</p>
@@ -219,7 +183,11 @@ export default function CallDetails() {
                 <div>
                   <p className="flex items-center gap-1 font-semibold">
                     {call.nvo.organization_name}
-                    {call.nvo.verified && <span className="text-brand-600" title="Verified">✓</span>}
+                    {call.nvo.verified && (
+                      <span className="text-brand-600" title="Verified">
+                        ✓
+                      </span>
+                    )}
                   </p>
                 </div>
               </div>
@@ -228,7 +196,6 @@ export default function CallDetails() {
         </aside>
       </div>
 
-      {/* Similar */}
       {similar.length > 0 && (
         <section className="mt-12">
           <h2 className="mb-5 text-xl font-bold">{t('detail.similar')}</h2>

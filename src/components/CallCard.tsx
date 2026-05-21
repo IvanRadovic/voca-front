@@ -4,7 +4,7 @@ import type { Call } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
-import { api } from '../lib/api';
+import { useToggleSave } from '../hooks/mutations';
 import { CALL_TYPE_LABELS } from '../lib/constants';
 import { formatDate, formatPrice } from '../lib/format';
 
@@ -21,25 +21,19 @@ export default function CallCard({ call }: { call: Call }) {
   const { isAuthenticated, isYouth } = useAuth();
   const { t, lang } = useLanguage();
   const { openAuth } = useModal();
+  const toggle = useToggleSave();
   const [saved, setSaved] = useState(!!call.is_saved);
-  const [savePending, setSavePending] = useState(false);
 
   const typeLabel = CALL_TYPE_LABELS[call.type]?.[lang] ?? call.type;
   const gradient = GRADIENTS[call.id % GRADIENTS.length];
 
-  const toggleSave = async (e: React.MouseEvent) => {
+  const toggleSave = (e: React.MouseEvent) => {
     e.preventDefault();
     if (!isAuthenticated) {
       openAuth('login');
       return;
     }
-    setSavePending(true);
-    try {
-      const { data } = await api.post(`/calls/${call.id}/save`);
-      setSaved(data.saved);
-    } finally {
-      setSavePending(false);
-    }
+    toggle.mutate(call.id, { onSuccess: (data) => setSaved(data.saved) });
   };
 
   return (
@@ -63,7 +57,7 @@ export default function CallCard({ call }: { call: Call }) {
         {isYouth && (
           <button
             onClick={toggleSave}
-            disabled={savePending}
+            disabled={toggle.isPending}
             aria-label={t('common.save')}
             className="absolute right-3 top-3 rounded-full bg-white/90 p-1.5 text-gray-700 shadow-sm transition hover:text-brand-600"
           >

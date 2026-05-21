@@ -1,266 +1,43 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import Modal from './ui/Modal';
 import Spinner from './ui/Spinner';
+import Field from './ui/Field';
+import Select from './ui/Select';
+import ChipMultiSelect from './ui/ChipMultiSelect';
 import { useAuth } from '../context/AuthContext';
 import { useModal } from '../context/ModalContext';
 import { useLanguage } from '../context/LanguageContext';
-import { api, extractError } from '../lib/api';
+import { useCategories } from '../hooks/queries';
+import { extractError } from '../lib/api';
 import { EDUCATION_LEVELS } from '../lib/constants';
-import type { Category } from '../types';
+import {
+  loginSchema,
+  youthSchema,
+  nvoSchema,
+  type LoginValues,
+  type YouthValues,
+  type NvoValues,
+} from '../lib/schemas';
 
 export default function AuthModal() {
   const { authOpen, authMode, closeAuth, setAuthMode } = useModal();
-  const { login, registerYouth, registerNvo } = useAuth();
-  const { t, lang } = useLanguage();
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [form, setForm] = useState<Record<string, string>>({});
-  const [interests, setInterests] = useState<number[]>([]);
-
-  useEffect(() => {
-    if (authOpen && categories.length === 0) {
-      api.get('/categories').then(({ data }) => setCategories(data.data)).catch(() => {});
-    }
-  }, [authOpen, categories.length]);
-
-  // Reset form whenever the modal mode changes or it is reopened.
-  useEffect(() => {
-    setForm({});
-    setInterests([]);
-    setError(null);
-  }, [authMode, authOpen]);
+  const { t } = useLanguage();
 
   if (!authOpen) return null;
 
-  const set = (key: string, value: string) => setForm((p) => ({ ...p, [key]: value }));
-
-  const toggleInterest = (id: number) =>
-    setInterests((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    try {
-      if (authMode === 'login') {
-        await login(form.email, form.password);
-      } else if (authMode === 'signup') {
-        await registerYouth({
-          name: form.name,
-          email: form.email,
-          password: form.password,
-          password_confirmation: form.password_confirmation,
-          city: form.city || null,
-          date_of_birth: form.date_of_birth || null,
-          education_level: form.education_level || null,
-          interests,
-        });
-      } else {
-        await registerNvo({
-          name: form.name,
-          email: form.email,
-          password: form.password,
-          password_confirmation: form.password_confirmation,
-          organization_name: form.organization_name,
-          pib: form.pib || null,
-          website: form.website || null,
-          description: form.description || null,
-        });
-      }
-      closeAuth();
-    } catch (err) {
-      setError(extractError(err));
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const title =
-    authMode === 'login'
-      ? t('auth.loginTitle')
-      : authMode === 'signup'
-        ? t('auth.signupTitle')
-        : t('auth.nvoTitle');
+    authMode === 'login' ? t('auth.loginTitle') : authMode === 'signup' ? t('auth.signupTitle') : t('auth.nvoTitle');
 
   return (
     <Modal open={authOpen} onClose={closeAuth} maxWidth={authMode === 'login' ? 'max-w-md' : 'max-w-lg'}>
       <h2 className="mb-1 text-xl font-bold">{title}</h2>
       <p className="mb-5 text-sm text-gray-500 dark:text-gray-400">Voca</p>
 
-      {error && (
-        <div className="mb-4 rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700 dark:bg-rose-900/30 dark:text-rose-300">
-          {error}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-3">
-        {authMode !== 'login' && (
-          <div>
-            <label className="label">{authMode === 'nvo' ? t('auth.name') : t('auth.name')}</label>
-            <input className="input" required value={form.name ?? ''} onChange={(e) => set('name', e.target.value)} />
-          </div>
-        )}
-
-        {authMode === 'nvo' && (
-          <div>
-            <label className="label">{t('auth.orgName')}</label>
-            <input
-              className="input"
-              required
-              value={form.organization_name ?? ''}
-              onChange={(e) => set('organization_name', e.target.value)}
-            />
-          </div>
-        )}
-
-        <div>
-          <label className="label">{t('auth.email')}</label>
-          <input
-            type="email"
-            className="input"
-            required
-            value={form.email ?? ''}
-            onChange={(e) => set('email', e.target.value)}
-          />
-        </div>
-
-        <div className={authMode === 'login' ? '' : 'grid grid-cols-1 gap-3 sm:grid-cols-2'}>
-          <div>
-            <label className="label">{t('auth.password')}</label>
-            <input
-              type="password"
-              className="input"
-              required
-              minLength={8}
-              value={form.password ?? ''}
-              onChange={(e) => set('password', e.target.value)}
-            />
-          </div>
-          {authMode !== 'login' && (
-            <div>
-              <label className="label">{t('auth.passwordConfirm')}</label>
-              <input
-                type="password"
-                className="input"
-                required
-                value={form.password_confirmation ?? ''}
-                onChange={(e) => set('password_confirmation', e.target.value)}
-              />
-            </div>
-          )}
-        </div>
-
-        {authMode === 'signup' && (
-          <>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <div>
-                <label className="label">{t('auth.city')}</label>
-                <input className="input" value={form.city ?? ''} onChange={(e) => set('city', e.target.value)} />
-              </div>
-              <div>
-                <label className="label">{t('auth.dob')}</label>
-                <input
-                  type="date"
-                  className="input"
-                  value={form.date_of_birth ?? ''}
-                  onChange={(e) => set('date_of_birth', e.target.value)}
-                />
-              </div>
-            </div>
-            <div>
-              <label className="label">{t('auth.education')}</label>
-              <select
-                className="input"
-                value={form.education_level ?? ''}
-                onChange={(e) => set('education_level', e.target.value)}
-              >
-                <option value="">—</option>
-                {EDUCATION_LEVELS.map((lvl) => (
-                  <option key={lvl.value} value={lvl.value}>
-                    {lang === 'cnr' ? lvl.cnr : lvl.en}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="label">{t('profile.interests')}</label>
-              <div className="flex max-h-32 flex-wrap gap-2 overflow-y-auto rounded-lg border border-gray-200 p-2 dark:border-gray-700">
-                {categories.map((c) => {
-                  const active = interests.includes(c.id);
-                  return (
-                    <button
-                      type="button"
-                      key={c.id}
-                      onClick={() => toggleInterest(c.id)}
-                      className={`chip border transition ${
-                        active
-                          ? 'border-brand-600 bg-brand-600 text-white'
-                          : 'border-gray-300 text-gray-600 hover:border-brand-400 dark:border-gray-600 dark:text-gray-300'
-                      }`}
-                    >
-                      {c.name}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </>
-        )}
-
-        {authMode === 'nvo' && (
-          <>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <div>
-                <label className="label">{t('auth.pib')}</label>
-                <input className="input" value={form.pib ?? ''} onChange={(e) => set('pib', e.target.value)} />
-              </div>
-              <div>
-                <label className="label">{t('auth.website')}</label>
-                <input
-                  className="input"
-                  placeholder="https://"
-                  value={form.website ?? ''}
-                  onChange={(e) => set('website', e.target.value)}
-                />
-              </div>
-            </div>
-            <div>
-              <label className="label">{t('auth.description')}</label>
-              <textarea
-                className="input"
-                rows={3}
-                value={form.description ?? ''}
-                onChange={(e) => set('description', e.target.value)}
-              />
-            </div>
-          </>
-        )}
-
-        <button type="submit" className="btn-primary w-full" disabled={loading}>
-          {loading ? <Spinner className="h-4 w-4 text-white" /> : title}
-        </button>
-      </form>
-
-      {/* Social login placeholders (MVP). */}
-      {authMode === 'login' && (
-        <div className="mt-4">
-          <div className="my-3 flex items-center gap-3 text-xs text-gray-400">
-            <span className="h-px flex-1 bg-gray-200 dark:bg-gray-700" />
-            {t('auth.socialNote')}
-            <span className="h-px flex-1 bg-gray-200 dark:bg-gray-700" />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <button type="button" disabled className="btn-secondary cursor-not-allowed opacity-60">
-              Google
-            </button>
-            <button type="button" disabled className="btn-secondary cursor-not-allowed opacity-60">
-              LinkedIn
-            </button>
-          </div>
-        </div>
-      )}
+      {authMode === 'login' && <LoginForm onDone={closeAuth} />}
+      {authMode === 'signup' && <YouthForm onDone={closeAuth} />}
+      {authMode === 'nvo' && <NvoForm onDone={closeAuth} />}
 
       <div className="mt-5 space-y-1 text-center text-sm text-gray-500 dark:text-gray-400">
         {authMode === 'login' ? (
@@ -287,5 +64,214 @@ export default function AuthModal() {
         )}
       </div>
     </Modal>
+  );
+}
+
+/* -------------------- Login -------------------- */
+
+function LoginForm({ onDone }: { onDone: () => void }) {
+  const { login } = useAuth();
+  const { t } = useLanguage();
+  const [serverError, setServerError] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginValues>({ resolver: zodResolver(loginSchema) });
+
+  const onSubmit = handleSubmit(async (values) => {
+    setServerError(null);
+    try {
+      await login(values.email, values.password);
+      onDone();
+    } catch (err) {
+      setServerError(extractError(err));
+    }
+  });
+
+  return (
+    <form onSubmit={onSubmit} className="space-y-3" noValidate>
+      <ServerError message={serverError} />
+      <Field label={t('auth.email')} error={errors.email?.message}>
+        <input type="email" className="input" {...register('email')} />
+      </Field>
+      <Field label={t('auth.password')} error={errors.password?.message}>
+        <input type="password" className="input" {...register('password')} />
+      </Field>
+      <SubmitButton loading={isSubmitting} label={t('auth.loginTitle')} />
+      <SocialPlaceholder />
+    </form>
+  );
+}
+
+/* -------------------- Youth signup -------------------- */
+
+function YouthForm({ onDone }: { onDone: () => void }) {
+  const { registerYouth } = useAuth();
+  const { t, lang } = useLanguage();
+  const { data: categories = [] } = useCategories();
+  const [serverError, setServerError] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting },
+  } = useForm<YouthValues>({ resolver: zodResolver(youthSchema), defaultValues: { interests: [] } });
+
+  const onSubmit = handleSubmit(async (values) => {
+    setServerError(null);
+    try {
+      await registerYouth(values);
+      onDone();
+    } catch (err) {
+      setServerError(extractError(err));
+    }
+  });
+
+  return (
+    <form onSubmit={onSubmit} className="space-y-3" noValidate>
+      <ServerError message={serverError} />
+      <Field label={t('auth.name')} error={errors.name?.message}>
+        <input className="input" {...register('name')} />
+      </Field>
+      <Field label={t('auth.email')} error={errors.email?.message}>
+        <input type="email" className="input" {...register('email')} />
+      </Field>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <Field label={t('auth.password')} error={errors.password?.message}>
+          <input type="password" className="input" {...register('password')} />
+        </Field>
+        <Field label={t('auth.passwordConfirm')} error={errors.password_confirmation?.message}>
+          <input type="password" className="input" {...register('password_confirmation')} />
+        </Field>
+      </div>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <Field label={t('auth.city')}>
+          <input className="input" {...register('city')} />
+        </Field>
+        <Field label={t('auth.education')}>
+          <Controller
+            control={control}
+            name="education_level"
+            render={({ field }) => (
+              <Select
+                value={field.value ?? ''}
+                onChange={field.onChange}
+                placeholder="—"
+                options={EDUCATION_LEVELS.map((l) => ({ value: l.value, label: lang === 'cnr' ? l.cnr : l.en }))}
+              />
+            )}
+          />
+        </Field>
+      </div>
+      <Field label={t('profile.interests')}>
+        <Controller
+          control={control}
+          name="interests"
+          render={({ field }) => (
+            <ChipMultiSelect options={categories} value={field.value ?? []} onChange={field.onChange} scroll />
+          )}
+        />
+      </Field>
+      <SubmitButton loading={isSubmitting} label={t('auth.signupTitle')} />
+    </form>
+  );
+}
+
+/* -------------------- NGO signup -------------------- */
+
+function NvoForm({ onDone }: { onDone: () => void }) {
+  const { registerNvo } = useAuth();
+  const { t } = useLanguage();
+  const [serverError, setServerError] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<NvoValues>({ resolver: zodResolver(nvoSchema) });
+
+  const onSubmit = handleSubmit(async (values) => {
+    setServerError(null);
+    try {
+      await registerNvo(values);
+      onDone();
+    } catch (err) {
+      setServerError(extractError(err));
+    }
+  });
+
+  return (
+    <form onSubmit={onSubmit} className="space-y-3" noValidate>
+      <ServerError message={serverError} />
+      <Field label={t('auth.name')} error={errors.name?.message}>
+        <input className="input" {...register('name')} />
+      </Field>
+      <Field label={t('auth.orgName')} error={errors.organization_name?.message}>
+        <input className="input" {...register('organization_name')} />
+      </Field>
+      <Field label={t('auth.email')} error={errors.email?.message}>
+        <input type="email" className="input" {...register('email')} />
+      </Field>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <Field label={t('auth.password')} error={errors.password?.message}>
+          <input type="password" className="input" {...register('password')} />
+        </Field>
+        <Field label={t('auth.passwordConfirm')} error={errors.password_confirmation?.message}>
+          <input type="password" className="input" {...register('password_confirmation')} />
+        </Field>
+      </div>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <Field label={t('auth.pib')}>
+          <input className="input" {...register('pib')} />
+        </Field>
+        <Field label={t('auth.website')} error={errors.website?.message}>
+          <input className="input" placeholder="https://" {...register('website')} />
+        </Field>
+      </div>
+      <Field label={t('auth.description')}>
+        <textarea className="input" rows={3} {...register('description')} />
+      </Field>
+      <SubmitButton loading={isSubmitting} label={t('auth.nvoTitle')} />
+    </form>
+  );
+}
+
+/* -------------------- shared bits -------------------- */
+
+function ServerError({ message }: { message: string | null }) {
+  if (!message) return null;
+  return (
+    <div className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700 dark:bg-rose-900/30 dark:text-rose-300">
+      {message}
+    </div>
+  );
+}
+
+function SubmitButton({ loading, label }: { loading: boolean; label: string }) {
+  return (
+    <button type="submit" className="btn-primary w-full" disabled={loading}>
+      {loading ? <Spinner className="h-4 w-4 text-white" /> : label}
+    </button>
+  );
+}
+
+function SocialPlaceholder() {
+  const { t } = useLanguage();
+  return (
+    <div className="mt-4">
+      <div className="my-3 flex items-center gap-3 text-xs text-gray-400">
+        <span className="h-px flex-1 bg-gray-200 dark:bg-gray-700" />
+        {t('auth.socialNote')}
+        <span className="h-px flex-1 bg-gray-200 dark:bg-gray-700" />
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <button type="button" disabled className="btn-secondary cursor-not-allowed opacity-60">
+          Google
+        </button>
+        <button type="button" disabled className="btn-secondary cursor-not-allowed opacity-60">
+          LinkedIn
+        </button>
+      </div>
+    </div>
   );
 }

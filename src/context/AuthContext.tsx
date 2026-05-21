@@ -1,6 +1,8 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useMemo } from 'react';
 import type { ReactNode } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, tokenStorage } from '../lib/api';
+import { qk } from '../lib/queryClient';
 import type { User } from '../types';
 
 interface AuthContextValue {
@@ -13,59 +15,62 @@ interface AuthContextValue {
   registerYouth: (payload: Record<string, unknown>) => Promise<User>;
   registerNvo: (payload: Record<string, unknown>) => Promise<User>;
   logout: () => Promise<void>;
-  refresh: () => Promise<void>;
+  refresh: () => void;
   setUser: (user: User) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
+// The auth endpoints embed the user flat; /user wraps it in `data`.
+const unwrap = (payload: { data: User } | User): User =>
+  payload && typeof payload === 'object' && 'data' in payload ? payload.data : (payload as User);
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUserState] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const qc = useQueryClient();
+  const hasToken = !!tokenStorage.get();
 
-  const fetchUser = useCallback(async () => {
-    if (!tokenStorage.get()) {
-      setUserState(null);
-      setLoading(false);
-      return;
-    }
-    try {
-      const { data } = await api.get('/user');
-      setUserState(data.data);
-    } catch {
-      tokenStorage.clear();
-      setUserState(null);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const { data: user, isLoading } = useQuery({
+    queryKey: qk.user,
+    queryFn: async () => (await api.get<{ data: User }>('/user')).data,
+    enabled: hasToken,
+    retry: false,
+    staleTime: 5 * 60_000,
+    select: (res) => res.data,
+  });
 
-  useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
+  const setSession = useCallback(
+    (token: string, payload: { data: User } | User) => {
+      tokenStorage.set(token);
+      const u = unwrap(payload);
+      qc.setQueryData(qk.user, { data: u });
+      return u;
+    },
+    [qc],
+  );
 
-  const handleAuthResponse = (data: { token: string; user: { data: User } | User }) => {
-    tokenStorage.set(data.token);
-    // Auth endpoints wrap the user in a UserResource ("data").
-    const u = 'data' in data.user ? (data.user as { data: User }).data : (data.user as User);
-    setUserState(u);
-    return u;
-  };
+  const login = useCallback(
+    async (email: string, password: string) => {
+      const { data } = await api.post('/login', { email, password });
+      return setSession(data.token, data.user);
+    },
+    [setSession],
+  );
 
-  const login = useCallback(async (email: string, password: string) => {
-    const { data } = await api.post('/login', { email, password });
-    return handleAuthResponse(data);
-  }, []);
+  const registerYouth = useCallback(
+    async (payload: Record<string, unknown>) => {
+      const { data } = await api.post('/register', payload);
+      return setSession(data.token, data.user);
+    },
+    [setSession],
+  );
 
-  const registerYouth = useCallback(async (payload: Record<string, unknown>) => {
-    const { data } = await api.post('/register', payload);
-    return handleAuthResponse(data);
-  }, []);
-
-  const registerNvo = useCallback(async (payload: Record<string, unknown>) => {
-    const { data } = await api.post('/register/nvo', payload);
-    return handleAuthResponse(data);
-  }, []);
+  const registerNvo = useCallback(
+    async (payload: Record<string, unknown>) => {
+      const { data } = await api.post('/register/nvo', payload);
+      return setSession(data.token, data.user);
+    },
+    [setSession],
+  );
 
   const logout = useCallback(async () => {
     try {
@@ -74,13 +79,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // ignore network errors on logout
     }
     tokenStorage.clear();
-    setUserState(null);
-  }, []);
+    qc.clear();
+  }, [qc]);
 
   const value = useMemo<AuthContextValue>(
     () => ({
-      user,
-      loading,
+      user: user ?? null,
+      loading: hasToken && isLoading,
       isAuthenticated: !!user,
       isNvo: user?.role === 'nvo',
       isYouth: user?.role === 'youth',
@@ -88,10 +93,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       registerYouth,
       registerNvo,
       logout,
-      refresh: fetchUser,
-      setUser: setUserState,
+      refresh: () => qc.invalidateQueries({ queryKey: qk.user }),
+      setUser: (u: User) => qc.setQueryData(qk.user, { data: u }),
     }),
-    [user, loading, login, registerYouth, registerNvo, logout, fetchUser],
+    [user, hasToken, isLoading, login, registerYouth, registerNvo, logout, qc],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
