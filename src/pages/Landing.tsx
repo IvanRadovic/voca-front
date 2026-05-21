@@ -8,7 +8,7 @@ import CallCard from '../components/CallCard';
 import PartnersSlider from '../components/PartnersSlider';
 import Spinner from '../components/ui/Spinner';
 import ImageWithFallback from '../components/ui/ImageWithFallback';
-import { categoryImage, HERO_IMAGE, FEATURE_IMAGES } from '../lib/images';
+import { categoryImage, HERO_ILLUSTRATION, FEATURE_IMAGES } from '../lib/images';
 import type { Call, Category, PlatformStats } from '../types';
 import type { TranslationKey } from '../i18n/translations';
 
@@ -88,34 +88,24 @@ export default function Landing() {
 
   return (
     <div className="animate-fade-in">
-      {/* ---------- Hero (image background) ---------- */}
-      <section className="relative isolate overflow-hidden">
-        <ImageWithFallback
-          src={HERO_IMAGE}
-          alt=""
-          seed={4}
-          className="absolute inset-0 -z-10 h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-gray-950/90 via-gray-900/75 to-gray-900/30" />
-        <div className="mx-auto max-w-6xl px-4 py-24 sm:py-32">
-          <div className="max-w-2xl text-white">
-            <span className="chip mb-5 bg-white/15 px-3 py-1 text-sm text-white backdrop-blur">
-              {t('landing.statsNvos')} · {t('landing.statsCalls')} · {t('landing.statsYouth')}
+      {/* ---------- Hero (split: text + illustration) ---------- */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-brand-50 via-white to-brand-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 sm:py-20 lg:grid-cols-2">
+          <div>
+            <span className="chip mb-5 bg-brand-100 px-3 py-1 text-sm font-medium text-brand-700 dark:bg-brand-900/40 dark:text-brand-300">
+              {t('hero.ctaYouth')}
             </span>
-            <h1 className="text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl">
+            <h1 className="text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
               {t('hero.title')}
             </h1>
-            <p className="mt-5 max-w-xl text-lg text-gray-200">{t('hero.subtitle')}</p>
+            <p className="mt-5 max-w-xl text-lg text-gray-600 dark:text-gray-300">{t('hero.subtitle')}</p>
             <div className="mt-8 flex flex-wrap gap-3">
               {!isAuthenticated ? (
                 <>
                   <button onClick={() => openAuth('signup')} className="btn-primary px-5 py-2.5">
                     {t('hero.ctaYouth')}
                   </button>
-                  <button
-                    onClick={() => openAuth('nvo')}
-                    className="btn border border-white/40 bg-white/10 px-5 py-2.5 text-white hover:bg-white/20"
-                  >
+                  <button onClick={() => openAuth('nvo')} className="btn-secondary px-5 py-2.5">
                     {t('hero.ctaNvo')}
                   </button>
                 </>
@@ -124,13 +114,13 @@ export default function Landing() {
                   {t('hero.browse')}
                 </button>
               )}
-              <Link
-                to="/kako-funkcionise"
-                className="btn border border-white/40 bg-transparent px-5 py-2.5 text-white hover:bg-white/10"
-              >
-                {t('nav.how')}
+              <Link to="/kako-funkcionise" className="btn-ghost px-5 py-2.5">
+                {t('nav.how')} →
               </Link>
             </div>
+          </div>
+          <div className="flex justify-center">
+            <img src={HERO_ILLUSTRATION} alt="" className="w-full max-w-md lg:max-w-lg" />
           </div>
         </div>
       </section>
@@ -159,7 +149,9 @@ export default function Landing() {
           <div className="grid gap-6 md:grid-cols-3">
             {STEPS.map((step, i) => (
               <div key={step.title} className="card overflow-hidden">
-                <ImageWithFallback src={step.img} alt={t(step.title)} seed={i} className="h-40 w-full object-cover" />
+                <div className="flex h-44 items-center justify-center bg-brand-50 p-6 dark:bg-brand-900/20">
+                  <img src={step.img} alt={t(step.title)} className="h-full" />
+                </div>
                 <div className="p-5">
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-600 text-sm font-bold text-white">
                     {i + 1}

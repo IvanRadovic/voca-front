@@ -8,14 +8,16 @@
 const u = (id: string, w = 800, h = 600) =>
   `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&h=${h}&q=70`;
 
-// Hero — young people collaborating. Swap this URL to change the main image.
-export const HERO_IMAGE = u('1523240795612-9a054b0db644', 1600, 1000);
+// Bundled vector illustrations (in /public/illustrations) — always available,
+// no network dependency. Generated from the open-source unDraw set.
+export const HERO_ILLUSTRATION = '/illustrations/hero.svg';
+export const EMPTY_ILLUSTRATION = '/illustrations/empty.svg';
 
 // "How it works" steps.
 export const FEATURE_IMAGES = {
-  discover: u('1517048676732-d65bc937f952'), // students with laptops
-  apply: u('1543269865-cbf427effbad'), // group around a table
-  grow: u('1523580494863-6f3031224c94'), // students on campus steps
+  discover: '/illustrations/discover.svg',
+  apply: '/illustrations/apply.svg',
+  grow: '/illustrations/grow.svg',
 };
 
 // Category tiles — topic/scene photos (kept object-focused on purpose).
