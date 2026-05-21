@@ -5,11 +5,11 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useModal } from '../context/ModalContext';
 import CallCard from '../components/CallCard';
+import PartnersSlider from '../components/PartnersSlider';
 import Spinner from '../components/ui/Spinner';
 import ImageWithFallback from '../components/ui/ImageWithFallback';
-import { CALL_TYPE_LABELS } from '../lib/constants';
-import { categoryImage, HERO_IMAGE, TYPE_IMAGES, FEATURE_IMAGES } from '../lib/images';
-import type { Call, Category, PlatformStats, CallType } from '../types';
+import { categoryImage, HERO_IMAGE, FEATURE_IMAGES } from '../lib/images';
+import type { Call, Category, PlatformStats } from '../types';
 import type { TranslationKey } from '../i18n/translations';
 
 const TESTIMONIALS = [
@@ -85,8 +85,6 @@ export default function Landing() {
         { label: t('landing.statsApplications'), value: stats.applications },
       ]
     : [];
-
-  const showcaseTypes = Object.keys(TYPE_IMAGES) as CallType[];
 
   return (
     <div className="animate-fade-in">
@@ -239,34 +237,14 @@ export default function Landing() {
         )}
       </div>
 
-      {/* ---------- Opportunity types showcase ---------- */}
+      {/* ---------- Partners (NGOs) slider ---------- */}
       <section className="bg-gray-50 py-14 dark:bg-gray-900/40">
         <div className="mx-auto max-w-6xl px-4">
           <div className="mb-8 text-center">
-            <h2 className="text-2xl font-bold sm:text-3xl">{t('landing.typesTitle')}</h2>
-            <p className="mt-2 text-gray-500 dark:text-gray-400">{t('landing.typesSubtitle')}</p>
+            <h2 className="text-2xl font-bold sm:text-3xl">{t('landing.partnersTitle')}</h2>
+            <p className="mt-2 text-gray-500 dark:text-gray-400">{t('landing.partnersSubtitle')}</p>
           </div>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-            {showcaseTypes.map((type, i) => (
-              <Link
-                key={type}
-                to={`/calls?type=${type}`}
-                className="group relative h-28 overflow-hidden rounded-xl"
-              >
-                <ImageWithFallback
-                  src={TYPE_IMAGES[type]}
-                  alt={CALL_TYPE_LABELS[type][lang]}
-                  seed={i + 2}
-                  label={CALL_TYPE_LABELS[type][lang]}
-                  className="h-full w-full object-cover transition duration-300 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-950/75 to-transparent" />
-                <span className="absolute bottom-2 left-3 text-sm font-semibold text-white">
-                  {CALL_TYPE_LABELS[type][lang]}
-                </span>
-              </Link>
-            ))}
-          </div>
+          <PartnersSlider />
         </div>
       </section>
 
