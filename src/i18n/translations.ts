@@ -201,6 +201,9 @@ export const translations = {
     "auth.asYouth": "Sign up as a young person",
     "auth.asNvo": "Register as an NGO",
     "auth.socialNote": "Social login coming soon",
+    "toast.welcome": "Welcome back",
+    "toast.registered": "Welcome",
+    "toast.loggedOut": "You have been logged out",
   },
   cnr: {
     "nav.calls": "Pozivi",
@@ -404,6 +407,9 @@ export const translations = {
     "auth.asYouth": "Registruj se kao mlada osoba",
     "auth.asNvo": "Registruj se kao NVO",
     "auth.socialNote": "Prijava preko mreža uskoro",
+    "toast.welcome": "Dobrodošli nazad",
+    "toast.registered": "Dobrodošli",
+    "toast.loggedOut": "Uspješno ste odjavljeni",
   },
 } as const;
 

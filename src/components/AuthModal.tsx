@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import Modal from "./ui/Modal";
 import Spinner from "./ui/Spinner";
 import Field from "./ui/Field";
@@ -20,10 +22,19 @@ import {
   type YouthValues,
   type NvoValues,
 } from "../lib/schemas";
+import type { User } from "../types";
 
 export default function AuthModal() {
   const { authOpen, authMode, closeAuth, setAuthMode } = useModal();
   const { t } = useLanguage();
+  const navigate = useNavigate();
+
+  // After auth: greet the user and send them to the right place by role.
+  const handleSuccess = (user: User, isNew: boolean) => {
+    closeAuth();
+    toast.success(`${isNew ? t("toast.registered") : t("toast.welcome")}, ${user.name}!`);
+    navigate(user.role === "nvo" ? "/dashboard" : "/calls");
+  };
 
   if (!authOpen) return null;
 
@@ -43,9 +54,9 @@ export default function AuthModal() {
       <h2 className="mb-1 text-xl font-bold">{title}</h2>
       <p className="mb-5 text-sm text-gray-500 dark:text-gray-400">Voca</p>
 
-      {authMode === "login" && <LoginForm onDone={closeAuth} />}
-      {authMode === "signup" && <YouthForm onDone={closeAuth} />}
-      {authMode === "nvo" && <NvoForm onDone={closeAuth} />}
+      {authMode === "login" && <LoginForm onSuccess={handleSuccess} />}
+      {authMode === "signup" && <YouthForm onSuccess={handleSuccess} />}
+      {authMode === "nvo" && <NvoForm onSuccess={handleSuccess} />}
 
       <div className="mt-5 space-y-1 text-center text-sm text-gray-500 dark:text-gray-400">
         {authMode === "login" ? (
@@ -86,7 +97,7 @@ export default function AuthModal() {
 
 /* -------------------- Login -------------------- */
 
-function LoginForm({ onDone }: { onDone: () => void }) {
+function LoginForm({ onSuccess }: { onSuccess: (user: User, isNew: boolean) => void }) {
   const { login } = useAuth();
   const { t } = useLanguage();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -99,8 +110,8 @@ function LoginForm({ onDone }: { onDone: () => void }) {
   const onSubmit = handleSubmit(async (values) => {
     setServerError(null);
     try {
-      await login(values.email, values.password);
-      onDone();
+      const user = await login(values.email, values.password);
+      onSuccess(user, false);
     } catch (err) {
       setServerError(extractError(err));
     }
@@ -123,7 +134,7 @@ function LoginForm({ onDone }: { onDone: () => void }) {
 
 /* -------------------- Youth signup -------------------- */
 
-function YouthForm({ onDone }: { onDone: () => void }) {
+function YouthForm({ onSuccess }: { onSuccess: (user: User, isNew: boolean) => void }) {
   const { registerYouth } = useAuth();
   const { t, lang } = useLanguage();
   const { data: categories = [] } = useCategories();
@@ -141,8 +152,8 @@ function YouthForm({ onDone }: { onDone: () => void }) {
   const onSubmit = handleSubmit(async (values) => {
     setServerError(null);
     try {
-      await registerYouth(values);
-      onDone();
+      const user = await registerYouth(values);
+      onSuccess(user, true);
     } catch (err) {
       setServerError(extractError(err));
     }
@@ -215,7 +226,7 @@ function YouthForm({ onDone }: { onDone: () => void }) {
 
 /* -------------------- NGO signup -------------------- */
 
-function NvoForm({ onDone }: { onDone: () => void }) {
+function NvoForm({ onSuccess }: { onSuccess: (user: User, isNew: boolean) => void }) {
   const { registerNvo } = useAuth();
   const { t } = useLanguage();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -228,8 +239,8 @@ function NvoForm({ onDone }: { onDone: () => void }) {
   const onSubmit = handleSubmit(async (values) => {
     setServerError(null);
     try {
-      await registerNvo(values);
-      onDone();
+      const user = await registerNvo(values);
+      onSuccess(user, true);
     } catch (err) {
       setServerError(extractError(err));
     }

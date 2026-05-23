@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
@@ -22,6 +23,7 @@ export default function Navbar() {
   const handleLogout = async () => {
     await logout();
     navigate('/');
+    toast.success(t('toast.loggedOut'));
   };
 
   return (
