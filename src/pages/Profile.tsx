@@ -23,6 +23,7 @@ import {
   EDUCATION_LEVELS,
   GENDERS,
 } from "../lib/constants";
+import { applicationStatusLabel, localizeCategories } from "../lib/labels";
 import { formatDate } from "../lib/format";
 import { profileSchema, type ProfileValues } from "../lib/schemas";
 import type { User } from "../types";
@@ -186,7 +187,7 @@ function ProfileForm() {
       <Field label={t("profile.headline")}>
         <input
           className="input"
-          placeholder="npr. Student informatike, volonter"
+          placeholder={t("form.headlinePlaceholder")}
           {...register("headline")}
         />
       </Field>
@@ -218,7 +219,7 @@ function ProfileForm() {
           name="interests"
           render={({ field }) => (
             <ChipMultiSelect
-              options={categories}
+              options={localizeCategories(categories, lang)}
               value={field.value}
               onChange={field.onChange}
             />
@@ -264,7 +265,7 @@ function ApplicationsTab() {
               </p>
             </div>
             <span className={`chip ${APPLICATION_STATUS_STYLES[app.status]}`}>
-              {app.status}
+              {applicationStatusLabel(app.status, lang)}
             </span>
           </div>
 

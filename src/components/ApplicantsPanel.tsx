@@ -8,6 +8,7 @@ import Spinner from './ui/Spinner';
 import Avatar from './ui/Avatar';
 import Select from './ui/Select';
 import { APPLICATION_STATUS_STYLES } from '../lib/constants';
+import { applicationStatusLabel, categoryLabel } from '../lib/labels';
 import { formatDate } from '../lib/format';
 import type { Application, Call, ApplicationStatus } from '../types';
 
@@ -149,12 +150,10 @@ export default function ApplicantsPanel({ call, onClose }: Props) {
           clearable
           clearLabel={t('applicants.allStatuses')}
           placeholder={t('applicants.allStatuses')}
-          options={[
-            { value: 'pending', label: 'pending' },
-            { value: 'accepted', label: 'accepted' },
-            { value: 'rejected', label: 'rejected' },
-            { value: 'completed', label: 'completed' },
-          ]}
+          options={(['pending', 'accepted', 'rejected', 'completed'] as const).map((s) => ({
+            value: s,
+            label: applicationStatusLabel(s, lang),
+          }))}
         />
         <Select
           value={sort}
@@ -164,7 +163,7 @@ export default function ApplicantsPanel({ call, onClose }: Props) {
             { value: 'oldest', label: t('applicants.sortOldest') },
             { value: 'name', label: t('applicants.sortName') },
             { value: 'age', label: t('applicants.sortAge') },
-            { value: 'status', label: 'status' },
+            { value: 'status', label: t('form.status') },
           ]}
         />
       </div>
@@ -219,7 +218,9 @@ function ApplicantRow({
             </p>
           </div>
         </div>
-        <span className={`chip ${APPLICATION_STATUS_STYLES[app.status]}`}>{app.status}</span>
+        <span className={`chip ${APPLICATION_STATUS_STYLES[app.status]}`}>
+          {applicationStatusLabel(app.status, lang)}
+        </span>
       </div>
 
       {u?.headline && <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{u.headline}</p>}
@@ -233,19 +234,19 @@ function ApplicantRow({
             onClick={() => onStatus('accepted')}
             className="rounded-md bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-700 hover:bg-emerald-200"
           >
-            Accept
+            {t('action.accept')}
           </button>
           <button
             onClick={() => onStatus('rejected')}
             className="rounded-md bg-rose-100 px-2 py-1 text-xs font-medium text-rose-700 hover:bg-rose-200"
           >
-            Reject
+            {t('action.reject')}
           </button>
           <button
             onClick={() => onStatus('completed')}
             className="rounded-md bg-brand-100 px-2 py-1 text-xs font-medium text-brand-700 hover:bg-brand-200"
           >
-            Complete
+            {t('action.complete')}
           </button>
         </div>
       </div>
@@ -261,7 +262,7 @@ function ApplicantRow({
             <div className="flex flex-wrap gap-1">
               {u.interests.map((i) => (
                 <span key={i.id} className="chip bg-gray-100 text-gray-500 dark:bg-gray-800">
-                  {i.name}
+                  {categoryLabel(i.slug, lang, i.name)}
                 </span>
               ))}
             </div>

@@ -17,6 +17,7 @@ import {
   HERO_ILLUSTRATION,
   FEATURE_IMAGES,
 } from "../lib/images";
+import { categoryLabel } from "../lib/labels";
 import type { TranslationKey } from "../i18n/translations";
 
 const TESTIMONIALS = [
@@ -192,25 +193,28 @@ export default function Landing() {
             {t("landing.categories")}
           </h2>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {categories.slice(0, 8).map((c, i) => (
-              <Link
-                key={c.id}
-                to={`/calls?category=${c.slug}`}
-                className="group relative h-32 overflow-hidden rounded-xl"
-              >
-                <ImageWithFallback
-                  src={categoryImage(c.slug)}
-                  alt={c.name}
-                  seed={i + 1}
-                  label={c.name}
-                  className="h-full w-full object-cover transition duration-300 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 to-transparent" />
-                <span className="absolute bottom-3 left-3 font-semibold text-white">
-                  {c.name}
-                </span>
-              </Link>
-            ))}
+            {categories.slice(0, 8).map((c, i) => {
+              const name = categoryLabel(c.slug, lang, c.name);
+              return (
+                <Link
+                  key={c.id}
+                  to={`/calls?category=${c.slug}`}
+                  className="group relative h-32 overflow-hidden rounded-xl"
+                >
+                  <ImageWithFallback
+                    src={categoryImage(c.slug)}
+                    alt={name}
+                    seed={i + 1}
+                    label={name}
+                    className="h-full w-full object-cover transition duration-300 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 to-transparent" />
+                  <span className="absolute bottom-3 left-3 font-semibold text-white">
+                    {name}
+                  </span>
+                </Link>
+              );
+            })}
           </div>
         </section>
 

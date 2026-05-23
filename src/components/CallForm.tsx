@@ -11,6 +11,7 @@ import { useCategories } from "../hooks/queries";
 import { useSaveCall } from "../hooks/mutations";
 import { extractError } from "../lib/api";
 import { CALL_TYPES, CALL_TYPE_LABELS, PREREQUISITES } from "../lib/constants";
+import { callStatusLabel, localizeCategories } from "../lib/labels";
 import { callSchema, type CallValues } from "../lib/schemas";
 import type { Call } from "../types";
 
@@ -115,17 +116,17 @@ export default function CallForm({
         </div>
       )}
 
-      <Field label="Title *" error={errors.title?.message}>
+      <Field label={`${t("form.title")} *`} error={errors.title?.message}>
         <input className="input" maxLength={100} {...register("title")} />
       </Field>
-      <Field label="Subtitle">
+      <Field label={t("form.subtitle")}>
         <input className="input" maxLength={150} {...register("subtitle")} />
       </Field>
-      <Field label="Description *" error={errors.description?.message}>
+      <Field label={`${t("form.description")} *`} error={errors.description?.message}>
         <textarea className="input" rows={5} {...register("description")} />
       </Field>
 
-      <Field label="Image (max 5MB)">
+      <Field label={t("form.image")}>
         <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-4 text-center text-sm text-gray-500 transition hover:border-brand-400 dark:border-gray-600">
           {preview ? (
             <img
@@ -134,7 +135,7 @@ export default function CallForm({
               className="mb-2 h-32 rounded-lg object-cover"
             />
           ) : (
-            <span>Drag &amp; drop or click to upload</span>
+            <span>{t("form.imageHint")}</span>
           )}
           <input
             type="file"
@@ -162,7 +163,7 @@ export default function CallForm({
             )}
           />
         </Field>
-        <Field label="Status">
+        <Field label={t("form.status")}>
           <Controller
             control={control}
             name="status"
@@ -170,11 +171,10 @@ export default function CallForm({
               <Select
                 value={field.value}
                 onChange={(v) => field.onChange(v as CallValues["status"])}
-                options={[
-                  { value: "active", label: "Active" },
-                  { value: "finished", label: "Finished" },
-                  { value: "cancelled", label: "Cancelled" },
-                ]}
+                options={(["active", "finished", "cancelled"] as const).map((s) => ({
+                  value: s,
+                  label: callStatusLabel(s, lang),
+                }))}
               />
             )}
           />
@@ -195,7 +195,7 @@ export default function CallForm({
             )}
           />
         </Field>
-        <Field label="Price (€)">
+        <Field label={t("form.price")}>
           <input
             type="number"
             min="0"
@@ -204,7 +204,7 @@ export default function CallForm({
             {...register("price")}
           />
         </Field>
-        <Field label="Start date">
+        <Field label={t("form.startDate")}>
           <Controller
             control={control}
             name="start_date"
@@ -218,7 +218,7 @@ export default function CallForm({
             )}
           />
         </Field>
-        <Field label="End date">
+        <Field label={t("form.endDate")}>
           <Controller
             control={control}
             name="end_date"
@@ -232,7 +232,7 @@ export default function CallForm({
             )}
           />
         </Field>
-        <Field label="Max participants">
+        <Field label={t("form.maxParticipants")}>
           <input
             type="number"
             min="1"
@@ -267,7 +267,7 @@ export default function CallForm({
           name="categories"
           render={({ field }) => (
             <ChipMultiSelect
-              options={categories}
+              options={localizeCategories(categories, lang)}
               value={field.value}
               onChange={field.onChange}
             />

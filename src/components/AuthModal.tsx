@@ -14,6 +14,7 @@ import { useLanguage } from "../context/LanguageContext";
 import { useCategories } from "../hooks/queries";
 import { extractError } from "../lib/api";
 import { EDUCATION_LEVELS } from "../lib/constants";
+import { localizeCategories } from "../lib/labels";
 import {
   loginSchema,
   youthSchema,
@@ -211,7 +212,7 @@ function YouthForm({ onSuccess }: { onSuccess: (user: User, isNew: boolean) => v
           name="interests"
           render={({ field }) => (
             <ChipMultiSelect
-              options={categories}
+              options={localizeCategories(categories, lang)}
               value={field.value ?? []}
               onChange={field.onChange}
               scroll

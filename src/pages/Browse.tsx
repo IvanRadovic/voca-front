@@ -7,6 +7,7 @@ import GuestBanner from '../components/GuestBanner';
 import Select from '../components/ui/Select';
 import { PageSpinner } from '../components/ui/Spinner';
 import { CALL_TYPES, CALL_TYPE_LABELS } from '../lib/constants';
+import { categoryLabel } from '../lib/labels';
 
 export default function Browse() {
   const { t, lang } = useLanguage();
@@ -117,7 +118,7 @@ export default function Browse() {
               clearable
               clearLabel={t('common.all')}
               placeholder={t('common.all')}
-              options={categories.map((c) => ({ value: c.slug, label: c.name }))}
+              options={categories.map((c) => ({ value: c.slug, label: categoryLabel(c.slug, lang, c.name) }))}
             />
           </div>
 

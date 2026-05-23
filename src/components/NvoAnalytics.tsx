@@ -12,6 +12,7 @@ import {
 } from 'recharts';
 import { useLanguage } from '../context/LanguageContext';
 import { useNvoAnalytics } from '../hooks/queries';
+import { applicationStatusLabel, categoryLabelByName } from '../lib/labels';
 import Spinner from './ui/Spinner';
 import Select from './ui/Select';
 
@@ -19,7 +20,7 @@ const BRAND = '#0284c7';
 const ACCENT = '#f97316';
 
 export default function NvoAnalytics() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [period, setPeriod] = useState(6);
   const { data, isPending } = useNvoAnalytics(period);
 
@@ -49,7 +50,7 @@ export default function NvoAnalytics() {
           <div className="flex flex-wrap gap-2">
             {Object.entries(data.by_status).map(([k, v]) => (
               <span key={k} className="chip border border-gray-200 px-3 py-1 text-sm dark:border-gray-700">
-                {k}: <strong className="ml-1">{v}</strong>
+                {applicationStatusLabel(k, lang)}: <strong className="ml-1">{v}</strong>
               </span>
             ))}
           </div>
@@ -104,7 +105,7 @@ export default function NvoAnalytics() {
                       return (
                         <div key={c.name}>
                           <div className="mb-1 flex justify-between text-sm">
-                            <span>{c.name}</span>
+                            <span>{categoryLabelByName(c.name, lang)}</span>
                             <span className="text-gray-400">{c.count}</span>
                           </div>
                           <div className="h-2 rounded-full bg-gray-100 dark:bg-gray-800">

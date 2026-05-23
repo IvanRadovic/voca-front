@@ -52,3 +52,43 @@ export const APPLICATION_STATUS_STYLES: Record<string, string> = {
   rejected: 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300',
   completed: 'bg-brand-100 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300',
 };
+
+// Call lifecycle status labels.
+export const CALL_STATUS_LABELS: Record<string, { en: string; cnr: string }> = {
+  active: { en: 'Active', cnr: 'Aktivan' },
+  finished: { en: 'Finished', cnr: 'Završen' },
+  cancelled: { en: 'Cancelled', cnr: 'Otkazan' },
+};
+
+// Application status labels.
+export const APPLICATION_STATUS_LABELS: Record<string, { en: string; cnr: string }> = {
+  pending: { en: 'Pending', cnr: 'Na čekanju' },
+  accepted: { en: 'Accepted', cnr: 'Prihvaćen' },
+  rejected: { en: 'Rejected', cnr: 'Odbijen' },
+  completed: { en: 'Completed', cnr: 'Završen' },
+};
+
+// Category / interest labels keyed by slug (backend stores English names).
+export const CATEGORY_LABELS: Record<string, { en: string; cnr: string }> = {
+  it: { en: 'IT', cnr: 'IT' },
+  programming: { en: 'Programming', cnr: 'Programiranje' },
+  design: { en: 'Design', cnr: 'Dizajn' },
+  marketing: { en: 'Marketing', cnr: 'Marketing' },
+  entrepreneurship: { en: 'Entrepreneurship', cnr: 'Preduzetništvo' },
+  business: { en: 'Business', cnr: 'Biznis' },
+  sport: { en: 'Sport', cnr: 'Sport' },
+  music: { en: 'Music', cnr: 'Muzika' },
+  film: { en: 'Film', cnr: 'Film' },
+  photography: { en: 'Photography', cnr: 'Fotografija' },
+  writing: { en: 'Writing', cnr: 'Pisanje' },
+  volunteering: { en: 'Volunteering', cnr: 'Volontiranje' },
+  travel: { en: 'Travel', cnr: 'Putovanja' },
+  languages: { en: 'Languages', cnr: 'Jezici' },
+  psychology: { en: 'Psychology', cnr: 'Psihologija' },
+  ecology: { en: 'Ecology', cnr: 'Ekologija' },
+  fitness: { en: 'Fitness', cnr: 'Fitnes' },
+  art: { en: 'Art', cnr: 'Umjetnost' },
+  'personal-development': { en: 'Personal Development', cnr: 'Lični razvoj' },
+  health: { en: 'Health', cnr: 'Zdravlje' },
+};
+

@@ -10,6 +10,7 @@ import CallCard from "../components/CallCard";
 import Spinner, { PageSpinner } from "../components/ui/Spinner";
 import Avatar from "../components/ui/Avatar";
 import { CALL_TYPE_LABELS, PREREQUISITES } from "../lib/constants";
+import { categoryLabel } from "../lib/labels";
 import { formatDate, formatDateTime, formatPrice, isPast } from "../lib/format";
 
 export default function CallDetails() {
@@ -97,7 +98,7 @@ export default function CallDetails() {
                 key={c.id}
                 className="chip bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300"
               >
-                {c.name}
+                {categoryLabel(c.slug, lang, c.name)}
               </span>
             ))}
           </div>

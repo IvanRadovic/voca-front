@@ -10,6 +10,7 @@ import CallForm from "../components/CallForm";
 import ApplicantsPanel from "../components/ApplicantsPanel";
 import NvoAnalytics from "../components/NvoAnalytics";
 import { CALL_TYPE_LABELS } from "../lib/constants";
+import { callStatusLabel } from "../lib/labels";
 import { formatDate } from "../lib/format";
 import type { Call } from "../types";
 
@@ -144,7 +145,7 @@ export default function Dashboard() {
                       <span className="chip bg-gray-100 text-gray-600 dark:bg-gray-800">
                         {CALL_TYPE_LABELS[call.type][lang]}
                       </span>
-                      <span>{call.status}</span>
+                      <span>{callStatusLabel(call.status, lang)}</span>
                       <span>
                         · {call.applications_count ?? 0}{" "}
                         {t("dashboard.applicants").toLowerCase()}
