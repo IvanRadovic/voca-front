@@ -29,6 +29,15 @@ export interface User {
   education_level: string | null;
   avatar: string | null;
   bio: string | null;
+  headline: string | null;
+  about: string | null;
+  education: string | null;
+  work_experience: string | null;
+  skills: string | null;
+  linkedin: string | null;
+  phone: string | null;
+  gender: string | null;
+  age: number | null;
   email_verified_at: string | null;
   interests?: Category[];
   nvo?: Nvo | null;
@@ -50,6 +59,7 @@ export type CallStatus = 'active' | 'finished' | 'cancelled';
 
 export interface CallNvoSummary {
   id: number;
+  nvo_id: number | null;
   name: string;
   organization_name: string;
   verified: boolean;
@@ -96,6 +106,16 @@ export interface Application {
     email: string;
     city: string | null;
     education_level: string | null;
+    age: number | null;
+    gender: string | null;
+    headline: string | null;
+    about: string | null;
+    education: string | null;
+    work_experience: string | null;
+    skills: string | null;
+    linkedin: string | null;
+    phone: string | null;
+    avatar: string | null;
     interests: Category[];
   };
 }
@@ -138,4 +158,31 @@ export interface PlatformStats {
   calls: number;
   youth: number;
   applications: number;
+}
+
+export interface NvoAnalytics {
+  period: number;
+  calls_count: number;
+  applications_count: number;
+  by_status: { pending: number; accepted: number; rejected: number; completed: number };
+  series: { month: string; applications: number; calls: number }[];
+  age_distribution: { range: string; count: number }[];
+  city_distribution: { city: string; count: number }[];
+  top_categories: { name: string; count: number }[];
+  total_views: number;
+  average_rating: number;
+}
+
+export interface PublicNvo {
+  nvo: {
+    id: number;
+    organization_name: string;
+    description: string | null;
+    intro_message: string | null;
+    website: string | null;
+    verified: boolean;
+    member_since: string;
+  };
+  stats: { calls: number; applications: number; average_rating: number };
+  calls: Call[];
 }

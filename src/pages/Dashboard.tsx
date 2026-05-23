@@ -8,6 +8,7 @@ import Modal from "../components/ui/Modal";
 import Spinner from "../components/ui/Spinner";
 import CallForm from "../components/CallForm";
 import ApplicantsPanel from "../components/ApplicantsPanel";
+import NvoAnalytics from "../components/NvoAnalytics";
 import { CALL_TYPE_LABELS } from "../lib/constants";
 import { formatDate } from "../lib/format";
 import type { Call } from "../types";
@@ -21,6 +22,7 @@ export default function Dashboard() {
   const deleteCall = useDeleteCall();
   const updateNvo = useUpdateNvo();
 
+  const [view, setView] = useState<'overview' | 'analytics'>('overview');
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Call | null>(null);
   const [applicantsFor, setApplicantsFor] = useState<Call | null>(null);
@@ -83,6 +85,29 @@ export default function Dashboard() {
         </button>
       </div>
 
+      <div className="mb-6 flex gap-2 border-b border-gray-200 dark:border-gray-800">
+        {([
+          ['overview', t('dashboard.overview')],
+          ['analytics', t('dashboard.analytics')],
+        ] as const).map(([key, label]) => (
+          <button
+            key={key}
+            onClick={() => setView(key)}
+            className={`-mb-px border-b-2 px-3 py-2 text-sm font-medium transition ${
+              view === key
+                ? 'border-brand-600 text-brand-600'
+                : 'border-transparent text-gray-500 hover:text-gray-800 dark:hover:text-gray-200'
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {view === 'analytics' && <NvoAnalytics />}
+
+      {view === 'overview' && (
+      <>
       <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
         {statCards.map((s) => (
           <div key={s.label} className="card p-5">
@@ -207,6 +232,8 @@ export default function Dashboard() {
           </div>
         </aside>
       </div>
+      </>
+      )}
 
       {formOpen && (
         <Modal open onClose={() => setFormOpen(false)} maxWidth="max-w-2xl">

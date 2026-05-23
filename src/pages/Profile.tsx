@@ -18,7 +18,11 @@ import Field from "../components/ui/Field";
 import Select from "../components/ui/Select";
 import DateField from "../components/ui/DateField";
 import ChipMultiSelect from "../components/ui/ChipMultiSelect";
-import { APPLICATION_STATUS_STYLES, EDUCATION_LEVELS } from "../lib/constants";
+import {
+  APPLICATION_STATUS_STYLES,
+  EDUCATION_LEVELS,
+  GENDERS,
+} from "../lib/constants";
 import { formatDate } from "../lib/format";
 import { profileSchema, type ProfileValues } from "../lib/schemas";
 import type { User } from "../types";
@@ -86,7 +90,13 @@ function ProfileForm() {
       city: user?.city ?? "",
       date_of_birth: user?.date_of_birth ?? "",
       education_level: user?.education_level ?? "",
-      bio: user?.bio ?? "",
+      gender: user?.gender ?? "",
+      headline: user?.headline ?? "",
+      about: user?.about ?? "",
+      education: user?.education ?? "",
+      work_experience: user?.work_experience ?? "",
+      skills: user?.skills ?? "",
+      linkedin: user?.linkedin ?? "",
       interests: user?.interests?.map((i) => i.id) ?? [],
     },
   });
@@ -157,10 +167,49 @@ function ProfileForm() {
             )}
           />
         </Field>
+        <Field label={t('profile.gender')}>
+          <Controller
+            control={control}
+            name="gender"
+            render={({ field }) => (
+              <Select
+                value={field.value ?? ''}
+                onChange={field.onChange}
+                placeholder="—"
+                options={GENDERS.map((g) => ({ value: g.value, label: lang === 'cnr' ? g.cnr : g.en }))}
+              />
+            )}
+          />
+        </Field>
       </div>
 
-      <Field label="Bio">
-        <textarea className="input" rows={3} {...register("bio")} />
+      <Field label={t("profile.headline")}>
+        <input
+          className="input"
+          placeholder="npr. Student informatike, volonter"
+          {...register("headline")}
+        />
+      </Field>
+      <Field label={t("profile.about")} error={errors.about?.message}>
+        <textarea className="input" rows={3} {...register("about")} />
+      </Field>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <Field label={t("profile.educationDetails")}>
+          <textarea className="input" rows={3} {...register("education")} />
+        </Field>
+        <Field label={t("profile.experience")}>
+          <textarea className="input" rows={3} {...register("work_experience")} />
+        </Field>
+      </div>
+      <Field label={t("profile.skills")}>
+        <input className="input" {...register("skills")} />
+      </Field>
+      <Field label={t("profile.linkedin")} error={errors.linkedin?.message}>
+        <input
+          className="input"
+          placeholder="https://linkedin.com/in/…"
+          {...register("linkedin")}
+        />
       </Field>
 
       <Field label={t("profile.interests")}>

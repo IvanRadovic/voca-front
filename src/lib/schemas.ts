@@ -51,7 +51,13 @@ export const profileSchema = z.object({
   city: z.string().optional(),
   date_of_birth: z.string().optional(),
   education_level: z.string().optional(),
-  bio: z.string().max(1000).optional(),
+  gender: z.string().optional(),
+  headline: z.string().max(150).optional(),
+  about: z.string().max(3000).optional(),
+  education: z.string().max(3000).optional(),
+  work_experience: z.string().max(3000).optional(),
+  skills: z.string().max(1000).optional(),
+  linkedin: z.string().url('Enter a valid URL').or(z.literal('')).optional(),
   interests: z.array(z.number()),
 });
 export type ProfileValues = z.infer<typeof profileSchema>;

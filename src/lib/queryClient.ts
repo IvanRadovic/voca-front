@@ -26,7 +26,9 @@ export const qk = {
   mySaved: ["my", "saved"] as const,
   myFeedbacks: ["my", "feedbacks"] as const,
   nvoStats: ["nvo", "stats"] as const,
+  nvoAnalytics: (period: number) => ["nvo", "analytics", period] as const,
   nvoCalls: ["nvo", "calls"] as const,
   applicants: (id: string | number) =>
     ["call", String(id), "applicants"] as const,
+  publicNvo: (id: string | number) => ["nvos", String(id)] as const,
 };

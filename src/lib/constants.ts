@@ -32,6 +32,13 @@ export const EDUCATION_LEVELS = [
   { value: 'master', en: 'Master', cnr: 'Master' },
 ];
 
+export const GENDERS = [
+  { value: 'male', en: 'Male', cnr: 'Muški' },
+  { value: 'female', en: 'Female', cnr: 'Ženski' },
+  { value: 'other', en: 'Other', cnr: 'Drugo' },
+  { value: 'undisclosed', en: 'Prefer not to say', cnr: 'Ne želim da kažem' },
+];
+
 export const PREREQUISITES = [
   { value: 'none', en: 'None', cnr: 'Nema' },
   { value: 'english', en: 'English knowledge', cnr: 'Znanje engleskog' },

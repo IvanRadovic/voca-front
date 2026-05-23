@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
 import { useModal } from "../context/ModalContext";
@@ -248,10 +248,13 @@ export default function CallDetails() {
               <p className="mb-1 text-xs uppercase tracking-wide text-gray-400">
                 {t("detail.organizer")}
               </p>
-              <div className="flex items-center gap-3">
-                <Avatar name={call.nvo.organization_name} size={40} />
-                <div>
-                  <p className="flex items-center gap-1 font-semibold">
+              {call.nvo.nvo_id ? (
+                <Link
+                  to={`/nvo/${call.nvo.nvo_id}`}
+                  className="flex items-center gap-3 transition hover:opacity-80"
+                >
+                  <Avatar name={call.nvo.organization_name} size={40} />
+                  <p className="flex items-center gap-1 font-semibold hover:text-brand-600">
                     {call.nvo.organization_name}
                     {call.nvo.verified && (
                       <span className="text-brand-600" title="Verified">
@@ -259,8 +262,13 @@ export default function CallDetails() {
                       </span>
                     )}
                   </p>
+                </Link>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <Avatar name={call.nvo.organization_name} size={40} />
+                  <p className="font-semibold">{call.nvo.organization_name}</p>
                 </div>
-              </div>
+              )}
             </div>
           )}
         </aside>

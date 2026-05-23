@@ -6,9 +6,11 @@ import type {
   Call,
   Category,
   Feedback,
+  NvoAnalytics,
   NvoStats,
   Paginated,
   PlatformStats,
+  PublicNvo,
 } from '../types';
 
 const get = async <T>(url: string, params?: Record<string, unknown>): Promise<T> => {
@@ -109,11 +111,31 @@ export function useNvoCalls() {
   });
 }
 
-export function useApplicants(callId: string | number | undefined) {
+export function useApplicants(
+  callId: string | number | undefined,
+  params: Record<string, unknown> = {},
+) {
   return useQuery({
-    queryKey: qk.applicants(callId ?? ''),
-    queryFn: () => get<Paginated<Application>>(`/calls/${callId}/applicants`),
+    queryKey: [...qk.applicants(callId ?? ''), params],
+    queryFn: () => get<Paginated<Application>>(`/calls/${callId}/applicants`, params),
     enabled: !!callId,
+    placeholderData: keepPreviousData,
     select: (res) => res.data,
+  });
+}
+
+export function useNvoAnalytics(period: number) {
+  return useQuery({
+    queryKey: qk.nvoAnalytics(period),
+    queryFn: () => get<NvoAnalytics>('/nvo/analytics', { period }),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function usePublicNvo(id: string | number | undefined) {
+  return useQuery({
+    queryKey: qk.publicNvo(id ?? ''),
+    queryFn: () => get<PublicNvo>(`/nvos/${id}`),
+    enabled: !!id,
   });
 }
