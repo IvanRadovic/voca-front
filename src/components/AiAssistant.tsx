@@ -45,13 +45,28 @@ export default function AiAssistant() {
   return (
     <>
       {/* Launcher */}
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className="fixed bottom-5 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-brand-600 text-2xl text-white shadow-lg transition hover:bg-brand-700"
-        aria-label={t("ai.title")}
-      >
-        {open ? "×" : "✨"}
-      </button>
+      {open ? (
+        <button
+          onClick={() => setOpen(false)}
+          className="fixed bottom-5 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-brand-600 text-2xl text-white shadow-lg transition hover:bg-brand-700"
+          aria-label={t("ai.close")}
+        >
+          ×
+        </button>
+      ) : (
+        <button
+          onClick={() => setOpen(true)}
+          aria-label={t("ai.title")}
+          className="group fixed bottom-5 right-5 z-40 flex items-center gap-2.5 rounded-full bg-gradient-to-br from-brand-600 via-brand-500 to-sky-500 bg-gradient-animated animate-gradient py-3 pl-3 pr-5 font-semibold text-white shadow-xl shadow-brand-600/40 ring-1 ring-white/30 transition hover:-translate-y-0.5 hover:shadow-brand-600/60"
+        >
+          {/* attention pulse */}
+          <span className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-brand-500 opacity-60 animate-ping" />
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-lg backdrop-blur transition group-hover:rotate-12">
+            ✨
+          </span>
+          <span className="text-sm">{t("ai.launcher")}</span>
+        </button>
+      )}
 
       {open && (
         <div className="fixed bottom-24 right-5 z-40 flex h-[28rem] w-[22rem] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl animate-scale-in dark:border-gray-700 dark:bg-gray-900">
