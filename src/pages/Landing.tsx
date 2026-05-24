@@ -141,13 +141,21 @@ export default function Landing() {
       )}
 
       {/* ---------- Featured opportunities ---------- */}
-      <section className="relative overflow-hidden py-16">
+      <section className="relative isolate overflow-hidden bg-brand-50 py-16 dark:bg-gray-900">
+        <div className="absolute inset-0 bg-grid opacity-30" aria-hidden />
+        <div className="pointer-events-none absolute -right-24 top-8 h-72 w-72 animate-blob rounded-full bg-brand-200/40 blur-3xl dark:bg-brand-800/20" aria-hidden />
+        <div className="pointer-events-none absolute -left-24 bottom-8 h-72 w-72 animate-blob rounded-full bg-sky-200/40 blur-3xl [animation-delay:3s] dark:bg-sky-900/20" aria-hidden />
+
         <div className="relative mx-auto max-w-6xl px-4">
           <div className="mb-10 text-center">
-            <span className="text-sm font-bold uppercase tracking-[0.2em] text-brand-600">
+            <span className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white px-4 py-1.5 text-sm font-semibold text-brand-700 shadow-sm dark:border-brand-800 dark:bg-gray-950 dark:text-brand-300">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
+              </span>
               {t("landing.featuredBadge")}
             </span>
-            <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
+            <h2 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
               {featuredHeading}
             </h2>
             <p className="mx-auto mt-2 max-w-2xl text-gray-500 dark:text-gray-400">
@@ -180,11 +188,16 @@ export default function Landing() {
           </div>
         </div>
       </section>
+      <SectionDivider bgClassName="bg-brand-50 dark:bg-gray-900" className="text-white dark:text-gray-950" />
 
       {/* ---------- How it works ---------- */}
-      <section className="mx-auto max-w-6xl px-4 pb-16">
+      <section className="bg-white py-16 dark:bg-gray-950">
+        <div className="mx-auto max-w-6xl px-4">
         <div className="mb-10 text-center">
-          <h2 className="text-2xl font-bold sm:text-3xl">{t("landing.howTitle")}</h2>
+          <span className="text-sm font-bold uppercase tracking-[0.2em] text-brand-600">
+            {cnr ? "Jednostavno" : "Simple"}
+          </span>
+          <h2 className="mt-3 text-2xl font-bold sm:text-3xl">{t("landing.howTitle")}</h2>
           <p className="mt-2 text-gray-500 dark:text-gray-400">{t("landing.howSubtitle")}</p>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
@@ -202,6 +215,7 @@ export default function Landing() {
               </div>
             </div>
           ))}
+        </div>
         </div>
       </section>
 
