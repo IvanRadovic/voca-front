@@ -93,6 +93,23 @@ export interface Call {
   created_at: string;
 }
 
+export interface MentorCallSummary {
+  id: number;
+  title: string;
+  type: CallType;
+  start_date: string | null;
+  end_date: string | null;
+  location: string | null;
+  is_online: boolean;
+  status: CallStatus;
+}
+
+export interface MentorReview {
+  rating: number;
+  comment: string | null;
+  author: string | null;
+}
+
 export interface Mentor {
   id: number;
   name: string;
@@ -103,6 +120,10 @@ export interface Mentor {
   expertise: string[];
   avatar: string | null;
   linkedin: string | null;
+  rating: number | null;
+  reviews_count: number;
+  calls: { upcoming: MentorCallSummary[]; past: MentorCallSummary[] };
+  reviews: MentorReview[];
 }
 
 export interface MentorAdmin {
@@ -117,6 +138,7 @@ export interface MentorAdmin {
   email: string | null;
   linkedin: string | null;
   is_active: boolean;
+  call_ids: number[];
   created_at: string;
 }
 

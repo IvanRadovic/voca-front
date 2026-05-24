@@ -3,7 +3,9 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useLanguage } from "../context/LanguageContext";
 import { useApplyMentor, useSaveMentor } from "../hooks/mutations";
+import { useCalls } from "../hooks/queries";
 import { extractError } from "../lib/api";
+import { callTypeLabel } from "../lib/labels";
 import Field from "./ui/Field";
 import Spinner from "./ui/Spinner";
 import type { MentorAdmin } from "../types";
@@ -35,6 +37,7 @@ export default function MentorForm({
   const apply = useApplyMentor();
   const save = useSaveMentor(initial?.id);
   const [photo, setPhoto] = useState<File | null>(null);
+  const [callIds, setCallIds] = useState<number[]>(initial?.call_ids ?? []);
   const [error, setError] = useState<string | null>(null);
 
   const {
@@ -66,7 +69,11 @@ export default function MentorForm({
     fd.append("bio_en", values.bio_en ?? "");
     fd.append("email", values.email ?? "");
     fd.append("linkedin", values.linkedin ?? "");
-    if (mode === "admin") fd.append("is_active", values.is_active ? "1" : "0");
+    if (mode === "admin") {
+      fd.append("is_active", values.is_active ? "1" : "0");
+      fd.append("sync_calls", "1");
+      callIds.forEach((id) => fd.append("call_ids[]", String(id)));
+    }
     if (photo) fd.append("avatar", photo);
 
     try {
@@ -125,6 +132,8 @@ export default function MentorForm({
         <input type="file" accept="image/*" className="text-xs" onChange={(e) => setPhoto(e.target.files?.[0] ?? null)} />
       </Field>
 
+      {mode === "admin" && <CallPicker selected={callIds} onChange={setCallIds} />}
+
       {mode === "admin" && (
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" className="h-4 w-4 accent-brand-600" {...register("is_active")} />
@@ -147,5 +156,40 @@ export default function MentorForm({
         </button>
       </div>
     </form>
+  );
+}
+
+function CallPicker({ selected, onChange }: { selected: number[]; onChange: (ids: number[]) => void }) {
+  const { t, lang } = useLanguage();
+  const { data, isPending } = useCalls({ status: "all", per_page: 100 });
+  const calls = data?.data ?? [];
+
+  const toggle = (id: number) =>
+    onChange(selected.includes(id) ? selected.filter((x) => x !== id) : [...selected, id]);
+
+  return (
+    <Field label={t("mentor.linkedCallsAdmin")}>
+      {isPending ? (
+        <p className="text-xs text-gray-400">…</p>
+      ) : calls.length === 0 ? (
+        <p className="text-xs text-gray-400">—</p>
+      ) : (
+        <div className="max-h-40 space-y-1 overflow-y-auto rounded-lg border border-gray-200 p-2 dark:border-gray-700">
+          {calls.map((c) => (
+            <label key={c.id} className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                className="h-4 w-4 accent-brand-600"
+                checked={selected.includes(c.id)}
+                onChange={() => toggle(c.id)}
+              />
+              <span className="truncate">
+                {c.title} <span className="text-xs text-gray-400">· {callTypeLabel(c.type, lang)}</span>
+              </span>
+            </label>
+          ))}
+        </div>
+      )}
+    </Field>
   );
 }

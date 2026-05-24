@@ -11,6 +11,9 @@ import { PageSpinner } from "../components/ui/Spinner";
 import Spinner from "../components/ui/Spinner";
 import Avatar from "../components/ui/Avatar";
 import { localized } from "../lib/localize";
+import { callTypeLabel } from "../lib/labels";
+import { formatDate } from "../lib/format";
+import type { MentorCallSummary } from "../types";
 
 export default function MentorPage() {
   const { id } = useParams();
@@ -50,11 +53,21 @@ export default function MentorPage() {
         <div>
           <h1 className="text-2xl font-extrabold">{mentor.name}</h1>
           <p className="text-gray-500">{localized(lang, mentor.title, mentor.title_en)}</p>
-          {mentor.linkedin && (
-            <a href={mentor.linkedin} target="_blank" rel="noreferrer" className="text-sm text-brand-600 hover:underline">
-              LinkedIn
-            </a>
-          )}
+          <div className="mt-1 flex flex-wrap items-center gap-3 text-sm">
+            {mentor.rating !== null && (
+              <span className="inline-flex items-center gap-1 font-medium text-amber-500">
+                ★ {mentor.rating.toFixed(1)}
+                <span className="text-gray-400">
+                  ({mentor.reviews_count} {t("mentor.reviewsCount")})
+                </span>
+              </span>
+            )}
+            {mentor.linkedin && (
+              <a href={mentor.linkedin} target="_blank" rel="noreferrer" className="text-brand-600 hover:underline">
+                LinkedIn
+              </a>
+            )}
+          </div>
         </div>
       </div>
 
@@ -75,6 +88,28 @@ export default function MentorPage() {
         <div className="mt-6">
           <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-400">{t("mentor.about")}</h2>
           <p className="whitespace-pre-line text-gray-700 dark:text-gray-300">{localized(lang, mentor.bio, mentor.bio_en)}</p>
+        </div>
+      )}
+
+      {mentor.calls.upcoming.length > 0 && (
+        <CallList title={t("mentor.upcomingCalls")} calls={mentor.calls.upcoming} lang={lang} />
+      )}
+      {mentor.calls.past.length > 0 && (
+        <CallList title={t("mentor.pastCalls")} calls={mentor.calls.past} lang={lang} />
+      )}
+
+      {mentor.reviews.length > 0 && (
+        <div className="mt-6">
+          <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-400">{t("mentor.reviews")}</h2>
+          <div className="space-y-3">
+            {mentor.reviews.map((r, i) => (
+              <div key={i} className="card p-4">
+                <p className="text-amber-500">{"★".repeat(r.rating)}<span className="text-gray-300 dark:text-gray-600">{"★".repeat(5 - r.rating)}</span></p>
+                {r.comment && <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">"{r.comment}"</p>}
+                {r.author && <p className="mt-1 text-xs text-gray-400">— {r.author}</p>}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -102,6 +137,41 @@ export default function MentorPage() {
             </button>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+function CallList({
+  title,
+  calls,
+  lang,
+}: {
+  title: string;
+  calls: MentorCallSummary[];
+  lang: "cnr" | "en";
+}) {
+  return (
+    <div className="mt-6">
+      <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-400">{title}</h2>
+      <div className="space-y-2">
+        {calls.map((c) => (
+          <Link
+            key={c.id}
+            to={`/calls/${c.id}`}
+            className="card flex items-center justify-between gap-3 p-3 transition hover:-translate-y-0.5 hover:shadow-card-hover"
+          >
+            <div className="min-w-0">
+              <p className="truncate font-medium">{c.title}</p>
+              <p className="text-xs text-gray-400">
+                {callTypeLabel(c.type, lang)}
+                {c.start_date ? ` · ${formatDate(c.start_date, lang)}` : ""}
+                {c.is_online ? (lang === "cnr" ? " · Online" : " · Online") : c.location ? ` · ${c.location}` : ""}
+              </p>
+            </div>
+            <span className="shrink-0 text-brand-600">→</span>
+          </Link>
+        ))}
       </div>
     </div>
   );

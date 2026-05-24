@@ -63,6 +63,9 @@ export default function MentorsPage() {
                 <div className="min-w-0">
                   <p className="truncate font-semibold">{m.name}</p>
                   <p className="truncate text-sm text-gray-500">{localized(lang, m.title, m.title_en)}</p>
+                  {m.rating !== null && (
+                    <p className="text-xs font-medium text-amber-500">★ {m.rating.toFixed(1)} <span className="text-gray-400">({m.reviews_count})</span></p>
+                  )}
                 </div>
               </div>
               {localized(lang, m.bio, m.bio_en) && (
