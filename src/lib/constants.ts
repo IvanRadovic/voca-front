@@ -68,6 +68,16 @@ export const APPLICATION_STATUS_LABELS: Record<string, { en: string; cnr: string
   completed: { en: 'Completed', cnr: 'Završen' },
 };
 
+// Gamification badge metadata keyed by backend badge key.
+export const BADGES: Record<string, { icon: string; en: string; cnr: string; descEn: string; descCnr: string }> = {
+  first_step: { icon: '🌱', en: 'First step', cnr: 'Prvi korak', descEn: 'Applied to your first opportunity', descCnr: 'Prva prijava na poziv' },
+  active: { icon: '⚡', en: 'Active', cnr: 'Aktivan', descEn: 'Applied to 5 opportunities', descCnr: '5 prijava na pozive' },
+  veteran: { icon: '🏆', en: 'Veteran', cnr: 'Veteran', descEn: 'Applied to 10 opportunities', descCnr: '10 prijava na pozive' },
+  finisher: { icon: '🎯', en: 'Finisher', cnr: 'Istrajan', descEn: 'Completed 3 events', descCnr: '3 završena događaja' },
+  reviewer: { icon: '✍️', en: 'Reviewer', cnr: 'Recenzent', descEn: 'Left 3 reviews', descCnr: '3 ostavljene recenzije' },
+  certified: { icon: '🏅', en: 'Certified', cnr: 'Sertifikovan', descEn: 'Earned a certificate', descCnr: 'Osvojen sertifikat' },
+};
+
 // Category / interest labels keyed by slug (backend stores English names).
 export const CATEGORY_LABELS: Record<string, { en: string; cnr: string }> = {
   it: { en: 'IT', cnr: 'IT' },

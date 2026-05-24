@@ -15,6 +15,7 @@ import { useLeaveFeedback, useUpdateProfile } from "../hooks/mutations";
 import { extractError } from "../lib/api";
 import CallCard from "../components/CallCard";
 import CertificateCard from "../components/CertificateCard";
+import Achievements from "../components/Achievements";
 import Spinner from "../components/ui/Spinner";
 import Field from "../components/ui/Field";
 import Select from "../components/ui/Select";
@@ -30,7 +31,7 @@ import { formatDate } from "../lib/format";
 import { profileSchema, type ProfileValues } from "../lib/schemas";
 import type { User } from "../types";
 
-type Tab = "profile" | "applications" | "wishlist" | "reviews" | "certificates";
+type Tab = "profile" | "achievements" | "applications" | "wishlist" | "reviews" | "certificates";
 
 export default function Profile() {
   const { t } = useLanguage();
@@ -38,6 +39,7 @@ export default function Profile() {
 
   const tabs: [Tab, string][] = [
     ["profile", t("nav.profile")],
+    ["achievements", t("profile.achievements")],
     ["applications", t("profile.myApplications")],
     ["certificates", t("profile.myCertificates")],
     ["wishlist", t("profile.wishlist")],
@@ -65,6 +67,7 @@ export default function Profile() {
       </div>
 
       {tab === "profile" && <ProfileForm />}
+      {tab === "achievements" && <Achievements />}
       {tab === "applications" && <ApplicationsTab />}
       {tab === "certificates" && <CertificatesTab />}
       {tab === "wishlist" && <WishlistTab />}

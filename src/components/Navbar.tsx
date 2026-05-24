@@ -43,6 +43,9 @@ export default function Navbar() {
           <NavLink to="/kako-funkcionise" className={linkClass}>
             {t('nav.how')}
           </NavLink>
+          <NavLink to="/lider-tabla" className={linkClass}>
+            {t('nav.leaderboard')}
+          </NavLink>
           {isAuthenticated && isNvo && (
             <NavLink to="/dashboard" className={linkClass}>
               {t('nav.dashboard')}

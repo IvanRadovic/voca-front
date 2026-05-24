@@ -33,4 +33,6 @@ export const qk = {
   publicNvo: (id: string | number) => ["nvos", String(id)] as const,
   myCertificates: ["my", "certificates"] as const,
   certificate: (code: string) => ["certificate", code] as const,
+  gamification: ["me", "gamification"] as const,
+  leaderboard: (city: string) => ["leaderboard", city] as const,
 };

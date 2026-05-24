@@ -129,6 +129,26 @@ export interface Feedback {
   call?: { id: number; title: string };
 }
 
+export interface Gamification {
+  counts: { applications: number; completed: number; reviews: number; certificates: number };
+  level: {
+    level: number;
+    points: number;
+    current_floor: number;
+    next_threshold: number | null;
+    progress: number;
+  };
+  badges: { key: string; earned: boolean }[];
+}
+
+export interface LeaderboardEntry {
+  rank: number;
+  name: string;
+  city: string | null;
+  points: number;
+  level: number;
+}
+
 export interface Certificate {
   code: string;
   issued_at: string;

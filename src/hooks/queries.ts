@@ -7,6 +7,8 @@ import type {
   Category,
   Certificate,
   Feedback,
+  Gamification,
+  LeaderboardEntry,
   NvoAnalytics,
   NvoStats,
   Paginated,
@@ -138,6 +140,21 @@ export function usePublicNvo(id: string | number | undefined) {
     queryKey: qk.publicNvo(id ?? ''),
     queryFn: () => get<PublicNvo>(`/nvos/${id}`),
     enabled: !!id,
+  });
+}
+
+export function useMyGamification() {
+  return useQuery({
+    queryKey: qk.gamification,
+    queryFn: () => get<Gamification>('/me/gamification'),
+  });
+}
+
+export function useLeaderboard(city: string) {
+  return useQuery({
+    queryKey: qk.leaderboard(city),
+    queryFn: () => get<{ data: LeaderboardEntry[] }>('/leaderboard', { city: city || undefined }),
+    select: (res) => res.data,
   });
 }
 
