@@ -3,6 +3,7 @@ import { Toaster } from 'sonner';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import AuthModal from './AuthModal';
+import AiAssistant from './AiAssistant';
 import { useTheme } from '../context/ThemeContext';
 
 export default function Layout() {
@@ -15,6 +16,7 @@ export default function Layout() {
       </main>
       <Footer />
       <AuthModal />
+      <AiAssistant />
       <Toaster
         position="top-right"
         richColors

@@ -93,6 +93,32 @@ export function useUpdateProfile() {
   });
 }
 
+interface AiResult {
+  text: string;
+  source: 'ai' | 'template' | 'search';
+  matches?: { id: number; title: string; type: string }[];
+}
+
+export function useCoverLetter() {
+  return useMutation({
+    mutationFn: (payload: { call_id: number; lang: string }) =>
+      api.post<AiResult>('/ai/cover-letter', payload).then((r) => r.data),
+  });
+}
+
+export function useGenerateCv() {
+  return useMutation({
+    mutationFn: (lang: string) => api.post<AiResult>('/ai/cv', { lang }).then((r) => r.data),
+  });
+}
+
+export function useAiChat() {
+  return useMutation({
+    mutationFn: (payload: { message: string; lang: string }) =>
+      api.post<AiResult>('/ai/assistant', payload).then((r) => r.data),
+  });
+}
+
 export function useUpdateNvo() {
   const qc = useQueryClient();
   return useMutation({

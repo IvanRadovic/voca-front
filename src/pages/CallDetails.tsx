@@ -4,7 +4,8 @@ import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
 import { useModal } from "../context/ModalContext";
 import { useCall, useCallFeedbacks, useSimilarCalls } from "../hooks/queries";
-import { useApply, useToggleSave } from "../hooks/mutations";
+import { useApply, useToggleSave, useCoverLetter } from "../hooks/mutations";
+import AiTextButton from "../components/AiTextButton";
 import { extractError } from "../lib/api";
 import CallCard from "../components/CallCard";
 import Spinner, { PageSpinner } from "../components/ui/Spinner";
@@ -25,6 +26,7 @@ export default function CallDetails() {
   const { data: feedbacks = [] } = useCallFeedbacks(id);
   const apply = useApply(id ?? "");
   const toggleSave = useToggleSave();
+  const coverLetter = useCoverLetter();
 
   const [applied, setApplied] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -245,6 +247,14 @@ export default function CallDetails() {
                 <button onClick={handleSave} className="btn-secondary w-full">
                   {saved ? `★ ${t("common.saved")}` : `☆ ${t("common.save")}`}
                 </button>
+                {isYouth && (
+                  <AiTextButton
+                    className="btn-ghost w-full"
+                    label={t("ai.coverLetter")}
+                    title={t("ai.coverLetter")}
+                    generate={() => coverLetter.mutateAsync({ call_id: call.id, lang })}
+                  />
+                )}
                 {!isAuthenticated && (
                   <p className="pt-1 text-center text-xs text-gray-400">
                     {t("guest.applyHint")}

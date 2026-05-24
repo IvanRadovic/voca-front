@@ -11,11 +11,12 @@ import {
   useMyFeedbacks,
   useMySaved,
 } from "../hooks/queries";
-import { useLeaveFeedback, useUpdateProfile } from "../hooks/mutations";
+import { useGenerateCv, useLeaveFeedback, useUpdateProfile } from "../hooks/mutations";
 import { extractError } from "../lib/api";
 import CallCard from "../components/CallCard";
 import CertificateCard from "../components/CertificateCard";
 import Achievements from "../components/Achievements";
+import AiTextButton from "../components/AiTextButton";
 import Spinner from "../components/ui/Spinner";
 import Field from "../components/ui/Field";
 import Select from "../components/ui/Select";
@@ -83,6 +84,7 @@ function ProfileForm() {
   const { t, lang } = useLanguage();
   const { data: categories = [] } = useCategories();
   const updateProfile = useUpdateProfile();
+  const generateCv = useGenerateCv();
   const [savedMsg, setSavedMsg] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -234,13 +236,16 @@ function ProfileForm() {
         />
       </Field>
 
-      <button className="btn-primary" disabled={isSubmitting}>
-        {isSubmitting ? (
-          <Spinner className="h-4 w-4 text-white" />
-        ) : (
-          t("profile.save")
-        )}
-      </button>
+      <div className="flex flex-wrap gap-2">
+        <button className="btn-primary" disabled={isSubmitting}>
+          {isSubmitting ? <Spinner className="h-4 w-4 text-white" /> : t("profile.save")}
+        </button>
+        <AiTextButton
+          label={t("ai.generateCv")}
+          title={t("ai.generateCv")}
+          generate={() => generateCv.mutateAsync(lang)}
+        />
+      </div>
     </form>
   );
 }
