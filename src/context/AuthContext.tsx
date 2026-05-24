@@ -11,6 +11,7 @@ interface AuthContextValue {
   isAuthenticated: boolean;
   isNvo: boolean;
   isYouth: boolean;
+  isAdmin: boolean;
   login: (email: string, password: string) => Promise<User>;
   registerYouth: (payload: Record<string, unknown>) => Promise<User>;
   registerNvo: (payload: Record<string, unknown>) => Promise<User>;
@@ -93,6 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAuthenticated: !!user,
       isNvo: user?.role === 'nvo',
       isYouth: user?.role === 'youth',
+      isAdmin: user?.role === 'admin',
       login,
       registerYouth,
       registerNvo,

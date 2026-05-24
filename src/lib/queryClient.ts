@@ -42,4 +42,5 @@ export const qk = {
   myPosts: ["my", "posts"] as const,
   mentors: (search: string) => ["mentors", search] as const,
   mentor: (id: string | number) => ["mentor", String(id)] as const,
+  adminMentors: ["admin", "mentors"] as const,
 };

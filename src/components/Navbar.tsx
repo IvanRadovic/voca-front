@@ -10,7 +10,7 @@ import meFlag from 'flag-icons/flags/4x3/me.svg';
 import usFlag from 'flag-icons/flags/4x3/us.svg';
 
 export default function Navbar() {
-  const { user, isAuthenticated, isNvo, logout } = useAuth();
+  const { user, isAuthenticated, isNvo, isAdmin, logout } = useAuth();
   const { t, lang, toggle: toggleLang } = useLanguage();
   const { dark, toggle: toggleTheme } = useTheme();
   const { openAuth } = useModal();
@@ -60,6 +60,11 @@ export default function Navbar() {
           {isAuthenticated && isNvo && (
             <NavLink to="/dashboard" className={linkClass}>
               {t('nav.dashboard')}
+            </NavLink>
+          )}
+          {isAdmin && (
+            <NavLink to="/admin/mentori" className={linkClass}>
+              {t('nav.adminMentors')}
             </NavLink>
           )}
           {isAuthenticated && !isNvo && (

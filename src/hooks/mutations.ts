@@ -53,6 +53,38 @@ export function useDeletePost() {
   });
 }
 
+export function useApplyMentor() {
+  return useMutation({
+    mutationFn: (form: FormData) =>
+      api.post('/mentors/apply', form, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  });
+}
+
+export function useSaveMentor(existingId?: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (form: FormData) =>
+      api.post(existingId ? `/admin/mentors/${existingId}` : '/admin/mentors', form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: qk.adminMentors });
+      qc.invalidateQueries({ queryKey: ['mentors'] });
+    },
+  });
+}
+
+export function useDeleteMentor() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => api.delete(`/admin/mentors/${id}`),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: qk.adminMentors });
+      qc.invalidateQueries({ queryKey: ['mentors'] });
+    },
+  });
+}
+
 export function useRequestMentorship(mentorId: string | number) {
   return useMutation({
     mutationFn: (message: string) =>

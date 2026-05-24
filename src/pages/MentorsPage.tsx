@@ -4,19 +4,34 @@ import { useLanguage } from "../context/LanguageContext";
 import { useMentors } from "../hooks/queries";
 import { PageSpinner } from "../components/ui/Spinner";
 import Avatar from "../components/ui/Avatar";
+import Modal from "../components/ui/Modal";
+import MentorForm from "../components/MentorForm";
 
 export default function MentorsPage() {
   const { t } = useLanguage();
   const [search, setSearch] = useState("");
   const [input, setInput] = useState("");
+  const [applyOpen, setApplyOpen] = useState(false);
   const { data: mentors = [], isPending } = useMentors(search);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">{t("mentors.title")}</h1>
-        <p className="text-sm text-gray-500">{t("mentors.subtitle")}</p>
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold">{t("mentors.title")}</h1>
+          <p className="text-sm text-gray-500">{t("mentors.subtitle")}</p>
+        </div>
+        <button onClick={() => setApplyOpen(true)} className="btn-primary">
+          {t("mentor.become")}
+        </button>
       </div>
+
+      {applyOpen && (
+        <Modal open onClose={() => setApplyOpen(false)} maxWidth="max-w-lg">
+          <h2 className="mb-4 text-lg font-bold">{t("mentorApply.title")}</h2>
+          <MentorForm mode="apply" onSuccess={() => setApplyOpen(false)} onCancel={() => setApplyOpen(false)} />
+        </Modal>
+      )}
 
       <form
         onSubmit={(e) => {

@@ -5,7 +5,7 @@ import { PageSpinner } from './ui/Spinner';
 
 interface ProtectedRouteProps {
   children: ReactNode;
-  role?: 'nvo' | 'youth';
+  role?: 'nvo' | 'youth' | 'admin';
 }
 
 export default function ProtectedRoute({ children, role }: ProtectedRouteProps) {

@@ -25,6 +25,7 @@ const PostsPage = lazy(() => import('./pages/PostsPage'));
 const PostPage = lazy(() => import('./pages/PostPage'));
 const MentorsPage = lazy(() => import('./pages/MentorsPage'));
 const MentorPage = lazy(() => import('./pages/MentorPage'));
+const AdminMentorsPage = lazy(() => import('./pages/AdminMentorsPage'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Profile = lazy(() => import('./pages/Profile'));
 const NotFound = lazy(() => import('./pages/NotFound'));
@@ -54,6 +55,14 @@ export default function App() {
                       <Route path="/clanci/:slug" element={<PostPage />} />
                       <Route path="/mentori" element={<MentorsPage />} />
                       <Route path="/mentori/:id" element={<MentorPage />} />
+                      <Route
+                        path="/admin/mentori"
+                        element={
+                          <ProtectedRoute role="admin">
+                            <AdminMentorsPage />
+                          </ProtectedRoute>
+                        }
+                      />
                       <Route
                         path="/dashboard"
                         element={

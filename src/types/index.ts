@@ -103,6 +103,19 @@ export interface Mentor {
   linkedin: string | null;
 }
 
+export interface MentorAdmin {
+  id: number;
+  name: string;
+  title: string;
+  bio: string | null;
+  expertise: string | null;
+  avatar: string | null;
+  email: string | null;
+  linkedin: string | null;
+  is_active: boolean;
+  created_at: string;
+}
+
 export type PostType = "resource" | "blog";
 
 export interface Post {

@@ -10,6 +10,7 @@ import type {
   Gamification,
   LeaderboardEntry,
   Mentor,
+  MentorAdmin,
   NvoAnalytics,
   NvoStats,
   Paginated,
@@ -219,6 +220,14 @@ export function useMentor(id: string | undefined) {
     queryFn: () => get<{ data: Mentor }>(`/mentors/${id}`),
     enabled: !!id,
     retry: false,
+    select: (res) => res.data,
+  });
+}
+
+export function useAdminMentors() {
+  return useQuery({
+    queryKey: qk.adminMentors,
+    queryFn: () => get<{ data: MentorAdmin[] }>('/admin/mentors'),
     select: (res) => res.data,
   });
 }
