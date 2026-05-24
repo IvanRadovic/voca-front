@@ -93,6 +93,21 @@ export interface Call {
   created_at: string;
 }
 
+export type PostType = "resource" | "blog";
+
+export interface Post {
+  id: number;
+  type: PostType;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  body: string;
+  cover_image: string | null;
+  published_at: string | null;
+  author?: { id: number; name: string };
+  can_edit?: boolean;
+}
+
 export interface Story {
   id: number;
   body: string;

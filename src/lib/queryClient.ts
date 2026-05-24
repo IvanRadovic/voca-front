@@ -37,4 +37,7 @@ export const qk = {
   leaderboard: (city: string) => ["leaderboard", city] as const,
   callStories: (id: string | number) => ["call", String(id), "stories"] as const,
   recentStories: ["stories", "recent"] as const,
+  posts: (params: Record<string, unknown>) => ["posts", params] as const,
+  post: (slug: string) => ["post", slug] as const,
+  myPosts: ["my", "posts"] as const,
 };

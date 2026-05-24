@@ -45,6 +45,12 @@ export default function Navbar() {
           <NavLink to="/kako-funkcionise" className={linkClass}>
             {t('nav.how')}
           </NavLink>
+          <NavLink to="/resursi" className={linkClass}>
+            {t('nav.resources')}
+          </NavLink>
+          <NavLink to="/blog" className={linkClass}>
+            {t('nav.blog')}
+          </NavLink>
           <NavLink to="/lider-tabla" className={linkClass}>
             {t('nav.leaderboard')}
           </NavLink>

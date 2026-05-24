@@ -13,6 +13,7 @@ import type {
   NvoStats,
   Paginated,
   PlatformStats,
+  Post,
   PublicNvo,
   Story,
 } from '../types';
@@ -172,6 +173,32 @@ export function useRecentStories() {
   return useQuery({
     queryKey: qk.recentStories,
     queryFn: () => get<{ data: Story[] }>('/stories/recent'),
+    select: (res) => res.data,
+  });
+}
+
+export function usePosts(params: Record<string, unknown>) {
+  return useQuery({
+    queryKey: qk.posts(params),
+    queryFn: () => get<Paginated<Post>>('/posts', params),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function usePost(slug: string | undefined) {
+  return useQuery({
+    queryKey: qk.post(slug ?? ''),
+    queryFn: () => get<{ data: Post }>(`/posts/${slug}`),
+    enabled: !!slug,
+    retry: false,
+    select: (res) => res.data,
+  });
+}
+
+export function useMyPosts() {
+  return useQuery({
+    queryKey: qk.myPosts,
+    queryFn: () => get<{ data: Post[] }>('/my/posts'),
     select: (res) => res.data,
   });
 }

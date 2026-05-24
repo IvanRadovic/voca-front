@@ -28,6 +28,31 @@ export function useToggleSave() {
   });
 }
 
+export function useSavePost(existingId?: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (form: FormData) =>
+      api.post(existingId ? `/posts/${existingId}` : '/posts', form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['posts'] });
+      qc.invalidateQueries({ queryKey: qk.myPosts });
+    },
+  });
+}
+
+export function useDeletePost() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => api.delete(`/posts/${id}`),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['posts'] });
+      qc.invalidateQueries({ queryKey: qk.myPosts });
+    },
+  });
+}
+
 export function useShareStory(callId: string | number) {
   const qc = useQueryClient();
   return useMutation({
