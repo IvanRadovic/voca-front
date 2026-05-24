@@ -90,7 +90,9 @@ export default function Landing() {
   // Opportunities are the headline: personalized for youth, latest otherwise.
   const featured = recommended.length > 0 ? recommended : latest;
   const featuredHeading =
-    recommended.length > 0 ? t("landing.recommended") : t("landing.featuredTitle");
+    recommended.length > 0
+      ? t("landing.recommended")
+      : t("landing.featuredTitle");
 
   return (
     <div className="animate-fade-in">
@@ -172,10 +174,9 @@ export default function Landing() {
 
         <div className="relative mx-auto max-w-6xl px-4">
           <div className="mb-8 text-center">
-            <span className="chip animate-fade-in bg-brand-600 px-3 py-1 text-sm font-semibold text-white shadow-card">
-              {t("landing.featuredBadge")}
-            </span>
-            <h2 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">{featuredHeading}</h2>
+            <h2 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
+              {featuredHeading}
+            </h2>
             <p className="mx-auto mt-2 max-w-2xl text-gray-500 dark:text-gray-400">
               {t("landing.featuredSubtitle")}
             </p>
@@ -191,7 +192,10 @@ export default function Landing() {
                 <div
                   key={call.id}
                   className="animate-fade-in"
-                  style={{ animationDelay: `${i * 80}ms`, animationFillMode: "backwards" }}
+                  style={{
+                    animationDelay: `${i * 80}ms`,
+                    animationFillMode: "backwards",
+                  }}
                 >
                   <CallCard call={call} />
                 </div>
@@ -200,7 +204,10 @@ export default function Landing() {
           )}
 
           <div className="mt-9 text-center">
-            <button onClick={() => navigate("/calls")} className="btn-primary px-7 py-3 text-base">
+            <button
+              onClick={() => navigate("/calls")}
+              className="btn-primary px-7 py-3 text-base"
+            >
               {t("hero.browse")} →
             </button>
           </div>
@@ -268,7 +275,6 @@ export default function Landing() {
             })}
           </div>
         </section>
-
       </div>
 
       {/* ---------- Partners (NGOs) slider ---------- */}
@@ -310,20 +316,40 @@ export default function Landing() {
         {/* ---------- Stories / Testimonials ---------- */}
         <section className="pb-14">
           <h2 className="mb-8 text-center text-2xl font-bold sm:text-3xl">
-            {stories.length > 0 ? t("landing.stories") : t("landing.testimonials")}
+            {stories.length > 0
+              ? t("landing.stories")
+              : t("landing.testimonials")}
           </h2>
           {stories.length > 0 ? (
             <div className="grid gap-5 sm:grid-cols-3">
               {stories.slice(0, 6).map((s) => (
                 <div key={s.id} className="card overflow-hidden">
-                  {s.image && <img src={s.image} alt="" className="h-40 w-full object-cover" />}
+                  {s.image && (
+                    <img
+                      src={s.image}
+                      alt=""
+                      className="h-40 w-full object-cover"
+                    />
+                  )}
                   <div className="p-6">
-                    <p className="text-gray-600 dark:text-gray-300">“{s.body}”</p>
+                    <p className="text-gray-600 dark:text-gray-300">
+                      “{s.body}”
+                    </p>
                     <div className="mt-4 flex items-center gap-2">
-                      <Avatar name={s.author?.name ?? "?"} src={s.author?.avatar} size={28} />
+                      <Avatar
+                        name={s.author?.name ?? "?"}
+                        src={s.author?.avatar}
+                        size={28}
+                      />
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-semibold text-brand-600">{s.author?.name}</p>
-                        {s.call && <p className="truncate text-xs text-gray-400">{s.call.title}</p>}
+                        <p className="truncate text-sm font-semibold text-brand-600">
+                          {s.author?.name}
+                        </p>
+                        {s.call && (
+                          <p className="truncate text-xs text-gray-400">
+                            {s.call.title}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -338,7 +364,9 @@ export default function Landing() {
                   <p className="text-gray-600 dark:text-gray-300">
                     “{lang === "cnr" ? tm.cnr : tm.en}”
                   </p>
-                  <p className="mt-4 text-sm font-semibold text-brand-600">{tm.name}</p>
+                  <p className="mt-4 text-sm font-semibold text-brand-600">
+                    {tm.name}
+                  </p>
                 </div>
               ))}
             </div>
