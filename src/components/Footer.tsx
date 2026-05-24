@@ -34,6 +34,9 @@ export default function Footer() {
           </p>
         </div>
       </div>
+      <div className="border-t border-gray-100 py-4 text-center text-xs text-gray-400 dark:border-gray-800">
+        Powered by <span className="font-semibold text-gray-500 dark:text-gray-300">BIP TECH</span>
+      </div>
     </footer>
   );
 }
