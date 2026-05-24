@@ -31,11 +31,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const { data: user, isLoading } = useQuery({
     queryKey: qk.user,
-    queryFn: async () => (await api.get<{ data: User }>('/user')).data,
+    queryFn: async () => (await api.get<{ data: User | null }>('/user')).data,
     enabled: hasToken,
     retry: false,
     staleTime: 5 * 60_000,
-    select: (res) => res.data,
+    select: (res) => res?.data ?? null,
   });
 
   const setSession = useCallback(
@@ -79,7 +79,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // ignore network errors on logout
     }
     tokenStorage.clear();
-    qc.clear();
+    // Null the user first, then drop every OTHER cached query. We must not
+    // remove/clear the user query itself, because its active (still-enabled)
+    // observer would immediately refetch /user, 401, and keep stale data.
+    qc.setQueryData(qk.user, { data: null });
+    qc.removeQueries({ predicate: (query) => query.queryKey[0] !== 'user' });
   }, [qc]);
 
   const value = useMemo<AuthContextValue>(
