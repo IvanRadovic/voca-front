@@ -35,4 +35,6 @@ export const qk = {
   certificate: (code: string) => ["certificate", code] as const,
   gamification: ["me", "gamification"] as const,
   leaderboard: (city: string) => ["leaderboard", city] as const,
+  callStories: (id: string | number) => ["call", String(id), "stories"] as const,
+  recentStories: ["stories", "recent"] as const,
 };

@@ -7,10 +7,12 @@ import {
   useCategories,
   useFeed,
   usePlatformStats,
+  useRecentStories,
 } from "../hooks/queries";
 import CallCard from "../components/CallCard";
 import PartnersSlider from "../components/PartnersSlider";
 import Spinner from "../components/ui/Spinner";
+import Avatar from "../components/ui/Avatar";
 import ImageWithFallback from "../components/ui/ImageWithFallback";
 import {
   categoryImage,
@@ -74,6 +76,7 @@ export default function Landing() {
   const { data: latestPage, isLoading: loading } = useCalls({ per_page: 8 });
   const latest = latestPage?.data ?? [];
   const { data: recommended = [] } = useFeed(isAuthenticated && isYouth);
+  const { data: stories = [] } = useRecentStories();
 
   const statItems = stats
     ? [
@@ -305,24 +308,42 @@ export default function Landing() {
           </div>
         </section>
 
-        {/* ---------- Testimonials ---------- */}
+        {/* ---------- Stories / Testimonials ---------- */}
         <section className="pb-14">
           <h2 className="mb-8 text-center text-2xl font-bold sm:text-3xl">
-            {t("landing.testimonials")}
+            {stories.length > 0 ? t("landing.stories") : t("landing.testimonials")}
           </h2>
-          <div className="grid gap-5 sm:grid-cols-3">
-            {TESTIMONIALS.map((tm) => (
-              <div key={tm.name} className="card p-6">
-                <div className="mb-2 text-amber-500">★★★★★</div>
-                <p className="text-gray-600 dark:text-gray-300">
-                  “{lang === "cnr" ? tm.cnr : tm.en}”
-                </p>
-                <p className="mt-4 text-sm font-semibold text-brand-600">
-                  {tm.name}
-                </p>
-              </div>
-            ))}
-          </div>
+          {stories.length > 0 ? (
+            <div className="grid gap-5 sm:grid-cols-3">
+              {stories.slice(0, 6).map((s) => (
+                <div key={s.id} className="card overflow-hidden">
+                  {s.image && <img src={s.image} alt="" className="h-40 w-full object-cover" />}
+                  <div className="p-6">
+                    <p className="text-gray-600 dark:text-gray-300">“{s.body}”</p>
+                    <div className="mt-4 flex items-center gap-2">
+                      <Avatar name={s.author?.name ?? "?"} src={s.author?.avatar} size={28} />
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-semibold text-brand-600">{s.author?.name}</p>
+                        {s.call && <p className="truncate text-xs text-gray-400">{s.call.title}</p>}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid gap-5 sm:grid-cols-3">
+              {TESTIMONIALS.map((tm) => (
+                <div key={tm.name} className="card p-6">
+                  <div className="mb-2 text-amber-500">★★★★★</div>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    “{lang === "cnr" ? tm.cnr : tm.en}”
+                  </p>
+                  <p className="mt-4 text-sm font-semibold text-brand-600">{tm.name}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </section>
       </div>
 

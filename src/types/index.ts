@@ -89,7 +89,17 @@ export interface Call {
   nvo?: CallNvoSummary;
   is_saved?: boolean;
   has_applied?: boolean;
+  my_application_status?: ApplicationStatus | null;
   created_at: string;
+}
+
+export interface Story {
+  id: number;
+  body: string;
+  image: string | null;
+  created_at: string;
+  author?: { id: number; name: string; avatar: string | null; city: string | null };
+  call?: { id: number; title: string };
 }
 
 export type ApplicationStatus = 'pending' | 'accepted' | 'rejected' | 'completed';

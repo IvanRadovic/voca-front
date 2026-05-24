@@ -28,6 +28,20 @@ export function useToggleSave() {
   });
 }
 
+export function useShareStory(callId: string | number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (form: FormData) =>
+      api.post(`/calls/${callId}/stories`, form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: qk.callStories(callId) });
+      qc.invalidateQueries({ queryKey: qk.recentStories });
+    },
+  });
+}
+
 export function useLeaveFeedback(callId: string | number) {
   const qc = useQueryClient();
   return useMutation({

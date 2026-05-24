@@ -14,6 +14,7 @@ import type {
   Paginated,
   PlatformStats,
   PublicNvo,
+  Story,
 } from '../types';
 
 const get = async <T>(url: string, params?: Record<string, unknown>): Promise<T> => {
@@ -154,6 +155,23 @@ export function useLeaderboard(city: string) {
   return useQuery({
     queryKey: qk.leaderboard(city),
     queryFn: () => get<{ data: LeaderboardEntry[] }>('/leaderboard', { city: city || undefined }),
+    select: (res) => res.data,
+  });
+}
+
+export function useCallStories(id: string | number | undefined) {
+  return useQuery({
+    queryKey: qk.callStories(id ?? ''),
+    queryFn: () => get<{ data: Story[] }>(`/calls/${id}/stories`),
+    enabled: !!id,
+    select: (res) => res.data,
+  });
+}
+
+export function useRecentStories() {
+  return useQuery({
+    queryKey: qk.recentStories,
+    queryFn: () => get<{ data: Story[] }>('/stories/recent'),
     select: (res) => res.data,
   });
 }

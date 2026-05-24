@@ -8,6 +8,7 @@ import { useApply, useToggleSave, useCoverLetter } from "../hooks/mutations";
 import AiTextButton from "../components/AiTextButton";
 import { extractError } from "../lib/api";
 import CallCard from "../components/CallCard";
+import CallStories from "../components/CallStories";
 import Spinner, { PageSpinner } from "../components/ui/Spinner";
 import Avatar from "../components/ui/Avatar";
 import { CALL_TYPE_LABELS, PREREQUISITES } from "../lib/constants";
@@ -174,6 +175,8 @@ export default function CallDetails() {
               </div>
             )}
           </div>
+
+          <CallStories callId={call.id} canShare={call.my_application_status === "completed"} />
         </div>
 
         <aside className="space-y-4">
