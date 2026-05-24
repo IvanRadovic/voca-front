@@ -9,6 +9,7 @@ import type {
   Feedback,
   Gamification,
   LeaderboardEntry,
+  Mentor,
   NvoAnalytics,
   NvoStats,
   Paginated,
@@ -199,6 +200,25 @@ export function useMyPosts() {
   return useQuery({
     queryKey: qk.myPosts,
     queryFn: () => get<{ data: Post[] }>('/my/posts'),
+    select: (res) => res.data,
+  });
+}
+
+export function useMentors(search: string) {
+  return useQuery({
+    queryKey: qk.mentors(search),
+    queryFn: () => get<{ data: Mentor[] }>('/mentors', { search: search || undefined }),
+    placeholderData: keepPreviousData,
+    select: (res) => res.data,
+  });
+}
+
+export function useMentor(id: string | undefined) {
+  return useQuery({
+    queryKey: qk.mentor(id ?? ''),
+    queryFn: () => get<{ data: Mentor }>(`/mentors/${id}`),
+    enabled: !!id,
+    retry: false,
     select: (res) => res.data,
   });
 }

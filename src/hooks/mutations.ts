@@ -53,6 +53,13 @@ export function useDeletePost() {
   });
 }
 
+export function useRequestMentorship(mentorId: string | number) {
+  return useMutation({
+    mutationFn: (message: string) =>
+      api.post<{ message: string }>(`/mentors/${mentorId}/request`, { message }).then((r) => r.data),
+  });
+}
+
 export function useShareStory(callId: string | number) {
   const qc = useQueryClient();
   return useMutation({

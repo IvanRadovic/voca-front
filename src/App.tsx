@@ -23,6 +23,8 @@ const CalendarPage = lazy(() => import('./pages/CalendarPage'));
 const MapPage = lazy(() => import('./pages/MapPage'));
 const PostsPage = lazy(() => import('./pages/PostsPage'));
 const PostPage = lazy(() => import('./pages/PostPage'));
+const MentorsPage = lazy(() => import('./pages/MentorsPage'));
+const MentorPage = lazy(() => import('./pages/MentorPage'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Profile = lazy(() => import('./pages/Profile'));
 const NotFound = lazy(() => import('./pages/NotFound'));
@@ -50,6 +52,8 @@ export default function App() {
                       <Route path="/resursi" element={<PostsPage type="resource" />} />
                       <Route path="/blog" element={<PostsPage type="blog" />} />
                       <Route path="/clanci/:slug" element={<PostPage />} />
+                      <Route path="/mentori" element={<MentorsPage />} />
+                      <Route path="/mentori/:id" element={<MentorPage />} />
                       <Route
                         path="/dashboard"
                         element={

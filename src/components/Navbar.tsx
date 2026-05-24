@@ -51,6 +51,9 @@ export default function Navbar() {
           <NavLink to="/blog" className={linkClass}>
             {t('nav.blog')}
           </NavLink>
+          <NavLink to="/mentori" className={linkClass}>
+            {t('nav.mentors')}
+          </NavLink>
           <NavLink to="/lider-tabla" className={linkClass}>
             {t('nav.leaderboard')}
           </NavLink>

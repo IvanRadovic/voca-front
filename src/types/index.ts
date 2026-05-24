@@ -93,6 +93,16 @@ export interface Call {
   created_at: string;
 }
 
+export interface Mentor {
+  id: number;
+  name: string;
+  title: string;
+  bio: string | null;
+  expertise: string[];
+  avatar: string | null;
+  linkedin: string | null;
+}
+
 export type PostType = "resource" | "blog";
 
 export interface Post {

@@ -40,4 +40,6 @@ export const qk = {
   posts: (params: Record<string, unknown>) => ["posts", params] as const,
   post: (slug: string) => ["post", slug] as const,
   myPosts: ["my", "posts"] as const,
+  mentors: (search: string) => ["mentors", search] as const,
+  mentor: (id: string | number) => ["mentor", String(id)] as const,
 };
