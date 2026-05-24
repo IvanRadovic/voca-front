@@ -34,6 +34,7 @@ export default function CallForm({
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(initial?.image ?? null);
+  const [removeImage, setRemoveImage] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
   const {
@@ -69,7 +70,14 @@ export default function CallForm({
   const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
     setImageFile(file);
+    setRemoveImage(false);
     if (file) setPreview(URL.createObjectURL(file));
+  };
+
+  const clearImage = () => {
+    setImageFile(null);
+    setPreview(null);
+    setRemoveImage(true);
   };
 
   const onSubmit = handleSubmit(async (values) => {
@@ -94,6 +102,7 @@ export default function CallForm({
     values.categories.forEach((id) => fd.append("categories[]", String(id)));
     values.prerequisites.forEach((p) => fd.append("prerequisites[]", p));
     if (imageFile) fd.append("image", imageFile);
+    else if (removeImage) fd.append("remove_image", "1");
 
     try {
       await save.mutateAsync(fd);
@@ -127,23 +136,31 @@ export default function CallForm({
       </Field>
 
       <Field label={t("form.image")}>
-        <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-4 text-center text-sm text-gray-500 transition hover:border-brand-400 dark:border-gray-600">
-          {preview ? (
-            <img
-              src={preview}
-              alt="preview"
-              className="mb-2 h-32 rounded-lg object-cover"
-            />
-          ) : (
-            <span>{t("form.imageHint")}</span>
-          )}
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={onImageChange}
-          />
-        </label>
+        {preview ? (
+          <div className="space-y-2">
+            <div className="relative inline-block">
+              <img src={preview} alt="preview" className="h-40 rounded-lg object-cover" />
+              <button
+                type="button"
+                onClick={clearImage}
+                aria-label={t("form.removeImage")}
+                className="absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full bg-rose-600 text-white shadow hover:bg-rose-700"
+              >
+                ✕
+              </button>
+            </div>
+            <label className="block cursor-pointer text-sm font-medium text-brand-600 hover:underline">
+              {t("form.changeImage")}
+              <input type="file" accept="image/*" className="hidden" onChange={onImageChange} />
+            </label>
+          </div>
+        ) : (
+          <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-6 text-center text-sm text-gray-500 transition hover:border-brand-400 dark:border-gray-600">
+            <span className="text-2xl">🖼️</span>
+            <span className="mt-1">{t("form.imageHint")}</span>
+            <input type="file" accept="image/*" className="hidden" onChange={onImageChange} />
+          </label>
+        )}
       </Field>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
