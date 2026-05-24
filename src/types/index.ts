@@ -97,7 +97,9 @@ export interface Mentor {
   id: number;
   name: string;
   title: string;
+  title_en: string | null;
   bio: string | null;
+  bio_en: string | null;
   expertise: string[];
   avatar: string | null;
   linkedin: string | null;
@@ -107,7 +109,9 @@ export interface MentorAdmin {
   id: number;
   name: string;
   title: string;
+  title_en: string | null;
   bio: string | null;
+  bio_en: string | null;
   expertise: string | null;
   avatar: string | null;
   email: string | null;
@@ -122,9 +126,12 @@ export interface Post {
   id: number;
   type: PostType;
   title: string;
+  title_en: string | null;
   slug: string;
   excerpt: string | null;
+  excerpt_en: string | null;
   body: string;
+  body_en: string | null;
   cover_image: string | null;
   published_at: string | null;
   author?: { id: number; name: string };

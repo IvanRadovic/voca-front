@@ -12,8 +12,11 @@ import type { Post, PostType } from "../types";
 interface Values {
   type: PostType;
   title: string;
+  title_en: string;
   excerpt: string;
+  excerpt_en: string;
   body: string;
+  body_en: string;
   published: boolean;
 }
 
@@ -44,8 +47,11 @@ export default function PostForm({
     defaultValues: {
       type: initial?.type ?? defaultType,
       title: initial?.title ?? "",
+      title_en: initial?.title_en ?? "",
       excerpt: initial?.excerpt ?? "",
+      excerpt_en: initial?.excerpt_en ?? "",
       body: initial?.body ?? "",
+      body_en: initial?.body_en ?? "",
       published: initial ? initial.published_at !== null : true,
     },
   });
@@ -57,8 +63,11 @@ export default function PostForm({
     const fd = new FormData();
     fd.append("type", values.type);
     fd.append("title", values.title);
+    fd.append("title_en", values.title_en ?? "");
     fd.append("excerpt", values.excerpt ?? "");
+    fd.append("excerpt_en", values.excerpt_en ?? "");
     fd.append("body", values.body);
+    fd.append("body_en", values.body_en ?? "");
     fd.append("published", values.published ? "1" : "0");
     if (cover) fd.append("cover_image", cover);
     try {
@@ -129,6 +138,21 @@ export default function PostForm({
         )}
         <p className="mt-1 text-xs text-gray-400">{t("postForm.bodyHint")}</p>
       </div>
+
+      <fieldset className="space-y-4 rounded-xl border border-gray-200 p-4 dark:border-gray-700">
+        <legend className="px-1 text-xs font-semibold uppercase tracking-wide text-gray-400">
+          {t("postForm.englishSection")}
+        </legend>
+        <Field label={t("postForm.titleEn")}>
+          <input className="input" {...register("title_en")} />
+        </Field>
+        <Field label={t("postForm.excerptEn")}>
+          <input className="input" maxLength={300} {...register("excerpt_en")} />
+        </Field>
+        <Field label={t("postForm.bodyEn")}>
+          <textarea className="input font-mono text-sm" rows={8} {...register("body_en")} />
+        </Field>
+      </fieldset>
 
       <label className="flex items-center gap-2 text-sm">
         <input type="checkbox" className="h-4 w-4 accent-brand-600" {...register("published")} />

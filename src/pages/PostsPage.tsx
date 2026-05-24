@@ -7,6 +7,7 @@ import Modal from "../components/ui/Modal";
 import PostForm from "../components/PostForm";
 import { PageSpinner } from "../components/ui/Spinner";
 import { formatDate } from "../lib/format";
+import { localized } from "../lib/localize";
 import type { PostType } from "../types";
 
 const GRADIENTS = ["from-sky-500 to-cyan-400", "from-emerald-500 to-teal-400", "from-orange-500 to-amber-400", "from-rose-500 to-pink-400"];
@@ -80,8 +81,10 @@ export default function PostsPage({ type }: { type: PostType }) {
                   )}
                 </div>
                 <div className="flex flex-1 flex-col p-4">
-                  <h3 className="font-semibold leading-snug group-hover:text-brand-600">{p.title}</h3>
-                  {p.excerpt && <p className="mt-1 line-clamp-2 text-sm text-gray-500 dark:text-gray-400">{p.excerpt}</p>}
+                  <h3 className="font-semibold leading-snug group-hover:text-brand-600">{localized(lang, p.title, p.title_en)}</h3>
+                  {localized(lang, p.excerpt, p.excerpt_en) && (
+                    <p className="mt-1 line-clamp-2 text-sm text-gray-500 dark:text-gray-400">{localized(lang, p.excerpt, p.excerpt_en)}</p>
+                  )}
                   <p className="mt-auto pt-3 text-xs text-gray-400">{formatDate(p.published_at, lang)}</p>
                 </div>
               </Link>

@@ -11,8 +11,10 @@ import type { MentorAdmin } from "../types";
 interface Values {
   name: string;
   title: string;
+  title_en: string;
   expertise: string;
   bio: string;
+  bio_en: string;
   email: string;
   linkedin: string;
   is_active: boolean;
@@ -43,8 +45,10 @@ export default function MentorForm({
     defaultValues: {
       name: initial?.name ?? "",
       title: initial?.title ?? "",
+      title_en: initial?.title_en ?? "",
       expertise: initial?.expertise ?? "",
       bio: initial?.bio ?? "",
+      bio_en: initial?.bio_en ?? "",
       email: initial?.email ?? "",
       linkedin: initial?.linkedin ?? "",
       is_active: initial?.is_active ?? true,
@@ -56,8 +60,10 @@ export default function MentorForm({
     const fd = new FormData();
     fd.append("name", values.name);
     fd.append("title", values.title);
+    fd.append("title_en", values.title_en ?? "");
     fd.append("expertise", values.expertise ?? "");
     fd.append("bio", values.bio ?? "");
+    fd.append("bio_en", values.bio_en ?? "");
     fd.append("email", values.email ?? "");
     fd.append("linkedin", values.linkedin ?? "");
     if (mode === "admin") fd.append("is_active", values.is_active ? "1" : "0");
@@ -94,6 +100,19 @@ export default function MentorForm({
       <Field label={t("mentorApply.bio")}>
         <textarea className="input" rows={3} {...register("bio")} />
       </Field>
+
+      <fieldset className="space-y-3 rounded-xl border border-gray-200 p-4 dark:border-gray-700">
+        <legend className="px-1 text-xs font-semibold uppercase tracking-wide text-gray-400">
+          {t("mentorApply.englishSection")}
+        </legend>
+        <Field label={t("mentorApply.roleEn")}>
+          <input className="input" {...register("title_en")} />
+        </Field>
+        <Field label={t("mentorApply.bioEn")}>
+          <textarea className="input" rows={3} {...register("bio_en")} />
+        </Field>
+      </fieldset>
+
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <Field label={t("mentorApply.email")}>
           <input type="email" className="input" {...register("email")} />

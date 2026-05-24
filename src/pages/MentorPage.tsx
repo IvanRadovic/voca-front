@@ -10,10 +10,11 @@ import { extractError } from "../lib/api";
 import { PageSpinner } from "../components/ui/Spinner";
 import Spinner from "../components/ui/Spinner";
 import Avatar from "../components/ui/Avatar";
+import { localized } from "../lib/localize";
 
 export default function MentorPage() {
   const { id } = useParams();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const { isAuthenticated, isYouth } = useAuth();
   const { openAuth } = useModal();
   const { data: mentor, isLoading, isError } = useMentor(id);
@@ -48,7 +49,7 @@ export default function MentorPage() {
         <Avatar name={mentor.name} src={mentor.avatar} size={72} />
         <div>
           <h1 className="text-2xl font-extrabold">{mentor.name}</h1>
-          <p className="text-gray-500">{mentor.title}</p>
+          <p className="text-gray-500">{localized(lang, mentor.title, mentor.title_en)}</p>
           {mentor.linkedin && (
             <a href={mentor.linkedin} target="_blank" rel="noreferrer" className="text-sm text-brand-600 hover:underline">
               LinkedIn
@@ -70,10 +71,10 @@ export default function MentorPage() {
         </div>
       )}
 
-      {mentor.bio && (
+      {localized(lang, mentor.bio, mentor.bio_en) && (
         <div className="mt-6">
           <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-400">{t("mentor.about")}</h2>
-          <p className="text-gray-700 dark:text-gray-300">{mentor.bio}</p>
+          <p className="whitespace-pre-line text-gray-700 dark:text-gray-300">{localized(lang, mentor.bio, mentor.bio_en)}</p>
         </div>
       )}
 

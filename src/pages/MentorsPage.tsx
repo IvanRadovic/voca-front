@@ -6,9 +6,10 @@ import { PageSpinner } from "../components/ui/Spinner";
 import Avatar from "../components/ui/Avatar";
 import Modal from "../components/ui/Modal";
 import MentorForm from "../components/MentorForm";
+import { localized } from "../lib/localize";
 
 export default function MentorsPage() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [search, setSearch] = useState("");
   const [input, setInput] = useState("");
   const [applyOpen, setApplyOpen] = useState(false);
@@ -61,10 +62,12 @@ export default function MentorsPage() {
                 <Avatar name={m.name} src={m.avatar} size={48} />
                 <div className="min-w-0">
                   <p className="truncate font-semibold">{m.name}</p>
-                  <p className="truncate text-sm text-gray-500">{m.title}</p>
+                  <p className="truncate text-sm text-gray-500">{localized(lang, m.title, m.title_en)}</p>
                 </div>
               </div>
-              {m.bio && <p className="mt-3 line-clamp-2 text-sm text-gray-500 dark:text-gray-400">{m.bio}</p>}
+              {localized(lang, m.bio, m.bio_en) && (
+                <p className="mt-3 line-clamp-2 text-sm text-gray-500 dark:text-gray-400">{localized(lang, m.bio, m.bio_en)}</p>
+              )}
               <div className="mt-3 flex flex-wrap gap-1">
                 {m.expertise.slice(0, 3).map((e) => (
                   <span key={e} className="chip bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300">

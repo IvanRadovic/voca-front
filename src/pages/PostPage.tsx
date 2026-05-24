@@ -9,6 +9,7 @@ import PostForm from "../components/PostForm";
 import { PageSpinner } from "../components/ui/Spinner";
 import { renderMarkdown } from "../lib/markdown";
 import { formatDate } from "../lib/format";
+import { localized } from "../lib/localize";
 
 export default function PostPage() {
   const { slug } = useParams();
@@ -21,8 +22,10 @@ export default function PostPage() {
   if (isLoading) return <PageSpinner />;
   if (isError || !post) return <div className="py-24 text-center text-gray-500">{t("posts.empty")}</div>;
 
+  const heading = localized(lang, post.title, post.title_en);
+
   const onDelete = () => {
-    if (!confirm(`${t("posts.delete")}: ${post.title}?`)) return;
+    if (!confirm(`${t("posts.delete")}: ${heading}?`)) return;
     del.mutate(post.id, {
       onSuccess: () => {
         toast.success("✓");
@@ -38,7 +41,7 @@ export default function PostPage() {
       </Link>
 
       <div className="mt-3 flex items-start justify-between gap-4">
-        <h1 className="text-3xl font-extrabold leading-tight">{post.title}</h1>
+        <h1 className="text-3xl font-extrabold leading-tight">{heading}</h1>
         {post.can_edit && (
           <div className="flex shrink-0 gap-1">
             <button onClick={() => setEditing(true)} className="btn-ghost text-xs">
@@ -61,7 +64,7 @@ export default function PostPage() {
 
       <div
         className="prose prose-sm mt-6 max-w-none text-gray-700 dark:prose-invert dark:text-gray-300 sm:prose-base"
-        dangerouslySetInnerHTML={{ __html: renderMarkdown(post.body) }}
+        dangerouslySetInnerHTML={{ __html: renderMarkdown(localized(lang, post.body, post.body_en)) }}
       />
 
       {editing && (
