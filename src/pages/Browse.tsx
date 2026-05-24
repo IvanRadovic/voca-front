@@ -4,6 +4,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useCalls, useCategories } from '../hooks/queries';
 import CallCard from '../components/CallCard';
 import GuestBanner from '../components/GuestBanner';
+import BrowseViewSwitcher from '../components/BrowseViewSwitcher';
 import Select from '../components/ui/Select';
 import { PageSpinner } from '../components/ui/Spinner';
 import { CALL_TYPES, CALL_TYPE_LABELS } from '../lib/constants';
@@ -71,7 +72,10 @@ export default function Browse() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold">{t('browse.title')}</h1>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-bold">{t('browse.title')}</h1>
+        <BrowseViewSwitcher active="list" />
+      </div>
 
       <div className="mb-6">
         <GuestBanner />

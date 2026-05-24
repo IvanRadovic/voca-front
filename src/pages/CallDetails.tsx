@@ -12,6 +12,7 @@ import Avatar from "../components/ui/Avatar";
 import { CALL_TYPE_LABELS, PREREQUISITES } from "../lib/constants";
 import { categoryLabel } from "../lib/labels";
 import { formatDate, formatDateTime, formatPrice, isPast } from "../lib/format";
+import { googleCalendarUrl } from "../lib/calendarLink";
 
 export default function CallDetails() {
   const { id } = useParams();
@@ -206,6 +207,15 @@ export default function CallDetails() {
                 />
               )}
             </dl>
+
+            <a
+              href={googleCalendarUrl(call)}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-4 flex items-center justify-center gap-2 text-sm font-medium text-brand-600 hover:underline"
+            >
+              📅 {t("detail.addToCalendar")}
+            </a>
 
             {notice && (
               <div className="mt-4 rounded-lg bg-brand-50 px-3 py-2 text-sm text-brand-700 dark:bg-brand-900/30 dark:text-brand-300">

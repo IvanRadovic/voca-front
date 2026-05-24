@@ -19,6 +19,8 @@ const CallDetails = lazy(() => import('./pages/CallDetails'));
 const NvoPage = lazy(() => import('./pages/NvoPage'));
 const CertificatePage = lazy(() => import('./pages/CertificatePage'));
 const Leaderboard = lazy(() => import('./pages/Leaderboard'));
+const CalendarPage = lazy(() => import('./pages/CalendarPage'));
+const MapPage = lazy(() => import('./pages/MapPage'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Profile = lazy(() => import('./pages/Profile'));
 const NotFound = lazy(() => import('./pages/NotFound'));
@@ -41,6 +43,8 @@ export default function App() {
                       <Route path="/nvo/:id" element={<NvoPage />} />
                       <Route path="/sertifikat/:code" element={<CertificatePage />} />
                       <Route path="/lider-tabla" element={<Leaderboard />} />
+                      <Route path="/kalendar" element={<CalendarPage />} />
+                      <Route path="/mapa" element={<MapPage />} />
                       <Route
                         path="/dashboard"
                         element={
