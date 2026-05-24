@@ -13,6 +13,32 @@ const u = (id: string, w = 800, h = 600) =>
 export const HERO_ILLUSTRATION = "/illustrations/hero.svg";
 export const EMPTY_ILLUSTRATION = "/illustrations/empty.svg";
 
+// Shared photographic backgrounds for hero / CTA banners.
+export const HERO_PHOTO = u("1522202176988-66273c2fd55f", 1600, 900); // young team collaborating
+export const CTA_PHOTO = u("1529156069898-49953e39b3ac", 1600, 900); // group of friends/volunteers
+export const CALLS_PHOTO = u("1524178232363-1fb2b075b655", 1600, 900); // lecture hall / learning
+export const HOW_PHOTO = u("1531482615713-2afd69097998", 1600, 900); // people working together
+export const RESOURCES_PHOTO = u("1456513080510-7bf3a84b82f8", 1600, 900); // notebook / study
+export const BLOG_PHOTO = u("1499750310107-5fef28a66643", 1600, 900); // writing / laptop
+export const MENTORS_PHOTO = u("1543269865-cbf427effbad", 1600, 900); // mentoring / conversation
+
+// Photos by opportunity type (used as a fallback when a call has no image).
+const CALL_TYPE_IMAGES: Record<string, string> = {
+  seminar: u("1524178232363-1fb2b075b655", 800, 500), // lecture hall
+  conference: u("1540575467063-178a50c2df87", 800, 500), // conference
+  education: u("1503676260728-1c00da094a0b", 800, 500), // classroom
+  camp: u("1504280390367-361c6d9f38f4", 800, 500), // camp / tents
+  competition: u("1552664730-d307ca884978", 800, 500), // team competition
+  course: u("1517245386807-bb43f82c33c4", 800, 500), // study desk
+  workshop: u("1556761175-b413da4baf72", 800, 500), // workshop / hands-on
+  mentorship: u("1543269865-cbf427effbad", 800, 500), // mentoring / talk
+  volunteering: u("1593113598332-cd288d649433", 800, 500), // volunteers
+};
+
+export function callTypeImage(type: string): string {
+  return CALL_TYPE_IMAGES[type] ?? u("1523240795612-9a054b0db644", 800, 500);
+}
+
 // "How it works" steps.
 export const FEATURE_IMAGES = {
   discover: "/illustrations/discover.svg",

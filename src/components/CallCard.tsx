@@ -7,15 +7,8 @@ import { useModal } from "../context/ModalContext";
 import { useToggleSave } from "../hooks/mutations";
 import { CALL_TYPE_LABELS } from "../lib/constants";
 import { formatDate, formatPrice } from "../lib/format";
-
-const GRADIENTS = [
-  "from-sky-500 to-cyan-400",
-  "from-rose-500 to-orange-400",
-  "from-emerald-500 to-teal-400",
-  "from-blue-600 to-sky-400",
-  "from-amber-500 to-yellow-400",
-  "from-teal-500 to-emerald-400",
-];
+import { callTypeImage } from "../lib/images";
+import ImageWithFallback from "./ui/ImageWithFallback";
 
 export default function CallCard({ call }: { call: Call }) {
   const { isAuthenticated, isYouth } = useAuth();
@@ -25,7 +18,6 @@ export default function CallCard({ call }: { call: Call }) {
   const [saved, setSaved] = useState(!!call.is_saved);
 
   const typeLabel = CALL_TYPE_LABELS[call.type]?.[lang] ?? call.type;
-  const gradient = GRADIENTS[call.id % GRADIENTS.length];
 
   const toggleSave = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -39,25 +31,18 @@ export default function CallCard({ call }: { call: Call }) {
   return (
     <Link
       to={`/calls/${call.id}`}
-      className="card group flex flex-col overflow-hidden transition hover:-translate-y-0.5 hover:shadow-card-hover"
+      className="card group flex flex-col overflow-hidden transition duration-300 hover:-translate-y-1 hover:shadow-card-hover"
     >
-      <div className="relative h-40 overflow-hidden">
-        {call.image ? (
-          <img
-            src={call.image}
-            alt={call.title}
-            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-          />
-        ) : (
-          <div
-            className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${gradient}`}
-          >
-            <span className="text-3xl font-extrabold text-white/90">
-              {typeLabel}
-            </span>
-          </div>
-        )}
-        <span className="absolute left-3 top-3 chip bg-white/90 text-gray-800 shadow-sm">
+      <div className="relative h-44 overflow-hidden">
+        <ImageWithFallback
+          src={call.image ?? callTypeImage(call.type)}
+          alt={call.title}
+          seed={call.id}
+          label={typeLabel}
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+        />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-950/55 via-transparent to-transparent" />
+        <span className="absolute left-3 top-3 chip bg-white/90 text-gray-800 shadow-sm backdrop-blur">
           {typeLabel}
         </span>
         {isYouth && (

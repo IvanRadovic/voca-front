@@ -3,12 +3,15 @@ import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useCalls, useCategories } from '../hooks/queries';
 import CallCard from '../components/CallCard';
+import CTASection from '../components/CTASection';
 import GuestBanner from '../components/GuestBanner';
 import BrowseViewSwitcher from '../components/BrowseViewSwitcher';
 import Select from '../components/ui/Select';
+import PageHero from '../components/ui/PageHero';
 import { PageSpinner } from '../components/ui/Spinner';
 import { CALL_TYPES, CALL_TYPE_LABELS } from '../lib/constants';
 import { categoryLabel } from '../lib/labels';
+import { CALLS_PHOTO } from '../lib/images';
 
 export default function Browse() {
   const { t, lang } = useLanguage();
@@ -71,27 +74,38 @@ export default function Browse() {
   ];
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold">{t('browse.title')}</h1>
+    <>
+      <PageHero
+        eyebrow={lang === 'cnr' ? 'Sve prilike' : 'All opportunities'}
+        title={t('browse.title')}
+        subtitle={
+          lang === 'cnr'
+            ? 'Seminari, radionice, kampovi, takmičenja i još mnogo toga — pronađi svoju sljedeću priliku.'
+            : 'Seminars, workshops, camps, competitions and more — find your next opportunity.'
+        }
+        image={CALLS_PHOTO}
+      >
+        <form onSubmit={submitSearch} className="flex w-full max-w-xl gap-2 rounded-2xl bg-white p-2 shadow-card-hover dark:bg-gray-900">
+          <input
+            className="w-full rounded-xl border-0 bg-transparent px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none dark:text-gray-100"
+            placeholder={t('browse.searchPlaceholder')}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
+          <button type="submit" className="btn-primary shrink-0 px-5">
+            {t('common.search')}
+          </button>
+        </form>
+      </PageHero>
+
+      <div className="mx-auto max-w-6xl px-4 py-10">
+      <div className="mb-6 flex items-center justify-end">
         <BrowseViewSwitcher active="list" />
       </div>
 
       <div className="mb-6">
         <GuestBanner />
       </div>
-
-      <form onSubmit={submitSearch} className="mb-6 flex gap-2">
-        <input
-          className="input"
-          placeholder={t('browse.searchPlaceholder')}
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-        />
-        <button type="submit" className="btn-primary">
-          {t('common.search')}
-        </button>
-      </form>
 
       <div className="grid gap-8 lg:grid-cols-[240px_1fr]">
         <aside className="space-y-6">
@@ -176,6 +190,9 @@ export default function Browse() {
           )}
         </div>
       </div>
-    </div>
+      </div>
+
+      <CTASection />
+    </>
   );
 }

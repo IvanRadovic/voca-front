@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { initials } from '../../lib/format';
 
 interface AvatarProps {
@@ -7,13 +8,16 @@ interface AvatarProps {
 }
 
 export default function Avatar({ name, src, size = 36 }: AvatarProps) {
+  const [failed, setFailed] = useState(false);
   const style = { width: size, height: size };
-  if (src) {
+
+  if (src && !failed) {
     return (
       <img
         src={src}
         alt={name}
         style={style}
+        onError={() => setFailed(true)}
         className="rounded-full object-cover ring-2 ring-white dark:ring-gray-800"
       />
     );

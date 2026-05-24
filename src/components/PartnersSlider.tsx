@@ -1,17 +1,18 @@
-// MVP partners strip: an auto-scrolling marquee of placeholder NGO "logos".
-// Logos are rendered as monogram badges so nothing depends on external assets.
+// Auto-scrolling marquee of NGO partners. Two opposing rows make a fuller,
+// more dynamic banner. Logos are monogram badges so nothing depends on
+// external assets.
 
 const PARTNERS: { name: string; color: string }[] = [
-  { name: 'Tech Youth Hub', color: 'bg-sky-500' },
-  { name: 'Green Future', color: 'bg-emerald-500' },
-  { name: 'Creative Arts Collective', color: 'bg-rose-500' },
-  { name: 'EU Youth Network', color: 'bg-blue-600' },
-  { name: 'Digital Montenegro', color: 'bg-cyan-500' },
-  { name: 'Volonteri CG', color: 'bg-orange-500' },
-  { name: 'STEM Akademija', color: 'bg-teal-500' },
-  { name: 'Mladi Lideri', color: 'bg-indigo-500' },
-  { name: 'Eco Balkan', color: 'bg-lime-600' },
-  { name: 'Future Skills', color: 'bg-amber-500' },
+  { name: 'Tech Youth Hub', color: 'from-sky-500 to-cyan-400' },
+  { name: 'Green Future', color: 'from-emerald-500 to-teal-400' },
+  { name: 'Creative Arts Collective', color: 'from-rose-500 to-pink-400' },
+  { name: 'EU Youth Network', color: 'from-blue-600 to-sky-400' },
+  { name: 'Digital Montenegro', color: 'from-cyan-500 to-blue-400' },
+  { name: 'Volonteri CG', color: 'from-orange-500 to-amber-400' },
+  { name: 'STEM Akademija', color: 'from-teal-500 to-emerald-400' },
+  { name: 'Mladi Lideri', color: 'from-indigo-500 to-blue-400' },
+  { name: 'Eco Balkan', color: 'from-lime-500 to-emerald-400' },
+  { name: 'Future Skills', color: 'from-amber-500 to-orange-400' },
 ];
 
 function monogram(name: string): string {
@@ -25,8 +26,10 @@ function monogram(name: string): string {
 
 function LogoChip({ name, color }: { name: string; color: string }) {
   return (
-    <div className="mx-3 flex w-56 shrink-0 items-center gap-3 rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-card dark:border-gray-800 dark:bg-gray-900">
-      <span className={`flex h-10 w-10 items-center justify-center rounded-lg ${color} text-sm font-bold text-white`}>
+    <div className="mx-3 flex w-60 shrink-0 items-center gap-3 rounded-2xl border border-white/60 bg-white/80 px-5 py-4 shadow-card backdrop-blur transition hover:-translate-y-1 hover:shadow-card-hover dark:border-gray-700/60 dark:bg-gray-900/70">
+      <span
+        className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${color} text-base font-extrabold text-white shadow-sm`}
+      >
         {monogram(name)}
       </span>
       <span className="truncate text-sm font-semibold text-gray-700 dark:text-gray-200">{name}</span>
@@ -34,19 +37,28 @@ function LogoChip({ name, color }: { name: string; color: string }) {
   );
 }
 
-export default function PartnersSlider() {
-  // Duplicate the list so the marquee loops seamlessly (translateX -50%).
-  const loop = [...PARTNERS, ...PARTNERS];
+function Row({ reverse = false }: { reverse?: boolean }) {
+  const items = reverse ? [...PARTNERS].reverse() : PARTNERS;
+  const loop = [...items, ...items];
   return (
-    <div className="group relative overflow-hidden">
+    <div
+      className={`flex w-max ${reverse ? 'animate-marquee-reverse' : 'animate-marquee'} group-hover:[animation-play-state:paused]`}
+    >
+      {loop.map((p, i) => (
+        <LogoChip key={`${p.name}-${i}`} name={p.name} color={p.color} />
+      ))}
+    </div>
+  );
+}
+
+export default function PartnersSlider() {
+  return (
+    <div className="group relative space-y-4 overflow-hidden">
       {/* fade edges */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-gray-50 to-transparent dark:from-gray-900/40" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-gray-50 to-transparent dark:from-gray-900/40" />
-      <div className="flex w-max animate-marquee group-hover:[animation-play-state:paused]">
-        {loop.map((p, i) => (
-          <LogoChip key={`${p.name}-${i}`} name={p.name} color={p.color} />
-        ))}
-      </div>
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-brand-50 to-transparent dark:from-gray-950" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-brand-50 to-transparent dark:from-gray-950" />
+      <Row />
+      <Row reverse />
     </div>
   );
 }

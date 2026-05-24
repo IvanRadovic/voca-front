@@ -37,6 +37,10 @@ export default {
           '0%': { opacity: '0', transform: 'translateY(8px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
+        'fade-up': {
+          '0%': { opacity: '0', transform: 'translateY(28px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
         'scale-in': {
           '0%': { opacity: '0', transform: 'scale(0.96)' },
           '100%': { opacity: '1', transform: 'scale(1)' },
@@ -45,11 +49,42 @@ export default {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-50%)' },
         },
+        'marquee-reverse': {
+          '0%': { transform: 'translateX(-50%)' },
+          '100%': { transform: 'translateX(0)' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-18px)' },
+        },
+        blob: {
+          '0%, 100%': {
+            borderRadius: '42% 58% 70% 30% / 45% 45% 55% 55%',
+            transform: 'translate(0, 0) rotate(0deg)',
+          },
+          '50%': {
+            borderRadius: '70% 30% 46% 54% / 30% 60% 40% 70%',
+            transform: 'translate(18px, -12px) rotate(10deg)',
+          },
+        },
+        gradient: {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+        },
+        shimmer: {
+          '100%': { transform: 'translateX(100%)' },
+        },
       },
       animation: {
         'fade-in': 'fade-in 0.3s ease-out',
+        'fade-up': 'fade-up 0.6s ease-out both',
         'scale-in': 'scale-in 0.2s ease-out',
         marquee: 'marquee 32s linear infinite',
+        'marquee-reverse': 'marquee-reverse 36s linear infinite',
+        float: 'float 6s ease-in-out infinite',
+        'float-slow': 'float 9s ease-in-out infinite',
+        blob: 'blob 16s ease-in-out infinite',
+        gradient: 'gradient 8s ease infinite',
       },
     },
   },

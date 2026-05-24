@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { useModal } from '../context/ModalContext';
+import CTASection from '../components/CTASection';
+import PageHero from '../components/ui/PageHero';
+import { HOW_PHOTO } from '../lib/images';
 import type { TranslationKey } from '../i18n/translations';
 
 interface Plan {
@@ -105,13 +108,12 @@ export default function HowItWorks() {
 
   return (
     <div className="animate-fade-in">
-      {/* Hero */}
-      <section className="border-b border-gray-100 bg-gradient-to-b from-brand-50 to-white py-16 dark:border-gray-800 dark:from-gray-900 dark:to-gray-950">
-        <div className="mx-auto max-w-3xl px-4 text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight">{t('how.heroTitle')}</h1>
-          <p className="mt-4 text-lg text-gray-500 dark:text-gray-400">{t('how.heroSubtitle')}</p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow={cnr ? 'Kako funkcioniše' : 'How it works'}
+        title={t('how.heroTitle')}
+        subtitle={t('how.heroSubtitle')}
+        image={HOW_PHOTO}
+      />
 
       <div className="mx-auto max-w-5xl px-4 py-14">
         {/* For youth */}
@@ -199,31 +201,9 @@ export default function HowItWorks() {
           ))}
         </div>
 
-        {/* CTA */}
-        <div className="rounded-2xl bg-brand-600 px-6 py-10 text-center text-white">
-          <h2 className="text-2xl font-bold">{t('landing.ctaTitle')}</h2>
-          <p className="mt-2 text-brand-100">{t('landing.ctaSubtitle')}</p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
-            {isAuthenticated ? (
-              <button onClick={() => navigate('/calls')} className="btn bg-white text-brand-700 hover:bg-brand-50">
-                {t('hero.browse')}
-              </button>
-            ) : (
-              <>
-                <button onClick={() => openAuth('signup')} className="btn bg-white text-brand-700 hover:bg-brand-50">
-                  {t('hero.ctaYouth')}
-                </button>
-                <button
-                  onClick={() => openAuth('nvo')}
-                  className="btn border border-white/40 bg-white/10 text-white hover:bg-white/20"
-                >
-                  {t('hero.ctaNvo')}
-                </button>
-              </>
-            )}
-          </div>
-        </div>
       </div>
+
+      <CTASection />
     </div>
   );
 }

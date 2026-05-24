@@ -6,7 +6,10 @@ import { PageSpinner } from "../components/ui/Spinner";
 import Avatar from "../components/ui/Avatar";
 import Modal from "../components/ui/Modal";
 import MentorForm from "../components/MentorForm";
+import CTASection from "../components/CTASection";
+import PageHero from "../components/ui/PageHero";
 import { localized } from "../lib/localize";
+import { MENTORS_PHOTO } from "../lib/images";
 
 export default function MentorsPage() {
   const { t, lang } = useLanguage();
@@ -16,16 +19,19 @@ export default function MentorsPage() {
   const { data: mentors = [], isPending } = useMentors(search);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold">{t("mentors.title")}</h1>
-          <p className="text-sm text-gray-500">{t("mentors.subtitle")}</p>
-        </div>
-        <button onClick={() => setApplyOpen(true)} className="btn-primary">
+    <>
+      <PageHero
+        eyebrow={lang === "cnr" ? "Mentorstvo" : "Mentorship"}
+        title={t("mentors.title")}
+        subtitle={t("mentors.subtitle")}
+        image={MENTORS_PHOTO}
+      >
+        <button onClick={() => setApplyOpen(true)} className="btn bg-white px-6 py-3 text-base font-semibold text-brand-700 shadow-lg transition hover:-translate-y-0.5 hover:bg-brand-50">
           {t("mentor.become")}
         </button>
-      </div>
+      </PageHero>
+
+      <div className="mx-auto max-w-6xl px-4 py-10">
 
       {applyOpen && (
         <Modal open onClose={() => setApplyOpen(false)} maxWidth="max-w-lg">
@@ -82,6 +88,9 @@ export default function MentorsPage() {
           ))}
         </div>
       )}
-    </div>
+      </div>
+
+      <CTASection />
+    </>
   );
 }

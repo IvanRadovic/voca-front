@@ -5,12 +5,14 @@ import { useAuth } from "../context/AuthContext";
 import { usePosts } from "../hooks/queries";
 import Modal from "../components/ui/Modal";
 import PostForm from "../components/PostForm";
+import CTASection from "../components/CTASection";
+import PageHero from "../components/ui/PageHero";
+import ImageWithFallback from "../components/ui/ImageWithFallback";
 import { PageSpinner } from "../components/ui/Spinner";
 import { formatDate } from "../lib/format";
 import { localized } from "../lib/localize";
+import { RESOURCES_PHOTO, BLOG_PHOTO } from "../lib/images";
 import type { PostType } from "../types";
-
-const GRADIENTS = ["from-sky-500 to-cyan-400", "from-emerald-500 to-teal-400", "from-orange-500 to-amber-400", "from-rose-500 to-pink-400"];
 
 export default function PostsPage({ type }: { type: PostType }) {
   const { t, lang } = useLanguage();
@@ -28,37 +30,36 @@ export default function PostsPage({ type }: { type: PostType }) {
 
   const title = type === "resource" ? t("posts.resourcesTitle") : t("posts.blogTitle");
   const subtitle = type === "resource" ? t("posts.resourcesSubtitle") : t("posts.blogSubtitle");
+  const heroImage = type === "resource" ? RESOURCES_PHOTO : BLOG_PHOTO;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold">{title}</h1>
-          <p className="text-sm text-gray-500">{subtitle}</p>
-        </div>
+    <>
+      <PageHero eyebrow={lang === "cnr" ? "Uči i raste" : "Learn & grow"} title={title} subtitle={subtitle} image={heroImage} />
+
+      <div className="mx-auto max-w-6xl px-4 py-10">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            setPage(1);
+            setSearch(searchInput);
+          }}
+          className="flex max-w-md flex-1 gap-2"
+        >
+          <input
+            className="input"
+            placeholder={t("posts.searchPlaceholder")}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
+          <button className="btn-secondary">{t("common.search")}</button>
+        </form>
         {canAuthor && (
           <button onClick={() => setFormOpen(true)} className="btn-primary">
             + {t("posts.new")}
           </button>
         )}
       </div>
-
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          setPage(1);
-          setSearch(searchInput);
-        }}
-        className="mb-6 flex max-w-md gap-2"
-      >
-        <input
-          className="input"
-          placeholder={t("posts.searchPlaceholder")}
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-        />
-        <button className="btn-secondary">{t("common.search")}</button>
-      </form>
 
       {isPending ? (
         <PageSpinner />
@@ -71,14 +72,16 @@ export default function PostsPage({ type }: { type: PostType }) {
               <Link
                 key={p.id}
                 to={`/clanci/${p.slug}`}
-                className="card group flex flex-col overflow-hidden transition hover:-translate-y-0.5 hover:shadow-card-hover"
+                className="card group flex flex-col overflow-hidden transition duration-300 hover:-translate-y-1 hover:shadow-card-hover"
               >
-                <div className="h-36 overflow-hidden">
-                  {p.cover_image ? (
-                    <img src={p.cover_image} alt="" className="h-full w-full object-cover transition group-hover:scale-105" />
-                  ) : (
-                    <div className={`h-full w-full bg-gradient-to-br ${GRADIENTS[p.id % GRADIENTS.length]}`} />
-                  )}
+                <div className="relative h-40 overflow-hidden">
+                  <ImageWithFallback
+                    src={p.cover_image ?? heroImage}
+                    alt=""
+                    seed={p.id}
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-950/40 to-transparent" />
                 </div>
                 <div className="flex flex-1 flex-col p-4">
                   <h3 className="font-semibold leading-snug group-hover:text-brand-600">{localized(lang, p.title, p.title_en)}</h3>
@@ -115,6 +118,9 @@ export default function PostsPage({ type }: { type: PostType }) {
           </div>
         </Modal>
       )}
-    </div>
+      </div>
+
+      <CTASection />
+    </>
   );
 }

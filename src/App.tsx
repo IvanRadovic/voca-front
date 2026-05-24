@@ -8,6 +8,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { ModalProvider } from './context/ModalContext';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
+import ScrollToTop from './components/ScrollToTop';
 import { PageSpinner } from './components/ui/Spinner';
 
 // Route-level code splitting keeps the initial bundle small; heavier pages
@@ -38,6 +39,7 @@ export default function App() {
           <BrowserRouter>
             <AuthProvider>
               <ModalProvider>
+                <ScrollToTop />
                 <Suspense fallback={<PageSpinner />}>
                   <Routes>
                     <Route element={<Layout />}>
