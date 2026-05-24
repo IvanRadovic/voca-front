@@ -99,7 +99,6 @@ export default function HowItWorks() {
     ['how.nvo3Title', 'how.nvo3Desc'],
   ];
   const faqs: [TranslationKey, TranslationKey][] = [
-    ['how.faq1Q', 'how.faq1A'],
     ['how.faq2Q', 'how.faq2A'],
     ['how.faq3Q', 'how.faq3A'],
   ];

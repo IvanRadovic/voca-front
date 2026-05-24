@@ -58,7 +58,8 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // Shared nav links for desktop bar + mobile drawer.
-  const links = [
+  const links: { to: string; label: string; end?: boolean }[] = [
+    { to: '/', label: t('nav.home'), end: true },
     { to: '/calls', label: t('nav.calls') },
     { to: '/kako-funkcionise', label: t('nav.how') },
     { to: '/resursi', label: t('nav.resources') },
@@ -88,15 +89,15 @@ export default function Navbar() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2">
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 font-extrabold text-white">
-            V
+            B
           </span>
-          <span className="text-lg font-extrabold tracking-tight">Voca</span>
+          <span className="text-lg font-extrabold tracking-tight">BIP TECH</span>
         </Link>
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-6 lg:flex">
           {links.map((l) => (
-            <NavLink key={l.to} to={l.to} className={linkClass}>
+            <NavLink key={l.to} to={l.to} end={l.end} className={linkClass}>
               {l.label}
             </NavLink>
           ))}
@@ -172,7 +173,7 @@ export default function Navbar() {
             className="flex w-72 max-w-[82vw] flex-col overflow-y-auto bg-white p-5 shadow-2xl transition duration-300 ease-out data-[closed]:translate-x-full dark:bg-gray-900"
           >
             <div className="mb-4 flex items-center justify-between">
-              <span className="text-lg font-extrabold">Voca</span>
+              <span className="text-lg font-extrabold">BIP TECH</span>
               <button
                 onClick={() => setMobileOpen(false)}
                 aria-label="Close menu"
@@ -200,6 +201,7 @@ export default function Navbar() {
                 <NavLink
                   key={l.to}
                   to={l.to}
+                  end={l.end}
                   onClick={() => setMobileOpen(false)}
                   style={{ animationDelay: `${i * 30}ms` }}
                   className={({ isActive }) =>

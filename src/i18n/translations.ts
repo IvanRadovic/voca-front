@@ -4,6 +4,7 @@ export type Lang = "en" | "cnr";
 
 export const translations = {
   en: {
+    "nav.home": "Home",
     "nav.calls": "Opportunities",
     "nav.dashboard": "Dashboard",
     "nav.profile": "My profile",
@@ -46,7 +47,7 @@ export const translations = {
     "landing.statsYouth": "Young people",
     "landing.statsApplications": "Applications",
     "landing.testimonials": "What participants say",
-    "landing.howTitle": "How Voca works",
+    "landing.howTitle": "How BIP TECH works",
     "landing.howSubtitle": "Three simple steps to your next opportunity.",
     "landing.step1Title": "Discover",
     "landing.step1Desc":
@@ -62,8 +63,8 @@ export const translations = {
       "Seminars, workshops, camps, competitions and more.",
     "landing.partnersTitle": "Our partners",
     "landing.partnersSubtitle":
-      "NGOs and organizations already publishing on Voca.",
-    "landing.whyTitle": "Why young people choose Voca",
+      "NGOs and organizations already publishing on BIP TECH.",
+    "landing.whyTitle": "Why young people choose BIP TECH",
     "landing.why1Title": "Personalized",
     "landing.why1Desc": "Your feed matches the topics you actually care about.",
     "landing.why2Title": "Free & easy",
@@ -73,9 +74,9 @@ export const translations = {
     "landing.why3Desc":
       "Verified organizations across the region post real programs.",
     "landing.why4Title": "Bilingual",
-    "landing.why4Desc": "Use Voca in Montenegrin or English - switch anytime.",
+    "landing.why4Desc": "Use BIP TECH in Montenegrin or English - switch anytime.",
     "landing.ctaTitle": "Ready to find your next opportunity?",
-    "landing.ctaSubtitle": "Join thousands of young people growing with Voca.",
+    "landing.ctaSubtitle": "Join thousands of young people growing with BIP TECH.",
 
     "nav.how": "How it works",
     "guest.bannerTitle": "Browsing as a guest",
@@ -84,9 +85,9 @@ export const translations = {
     "guest.register": "Register free",
     "guest.login": "Log in",
     "guest.applyHint": "Free registration · apply in one click",
-    "how.heroTitle": "How Voca works",
+    "how.heroTitle": "How BIP TECH works",
     "how.heroSubtitle":
-      "Voca connects young people with opportunities from NGOs - for free.",
+      "BIP TECH connects young people with opportunities from NGOs - for free.",
     "how.youthTitle": "For young people",
     "how.nvoTitle": "For organizations",
     "how.youth1Title": "Create your profile",
@@ -105,8 +106,6 @@ export const translations = {
     "how.nvo3Title": "Manage applicants",
     "how.nvo3Desc": "Accept, reject, message and track everyone in one place.",
     "how.faqTitle": "Frequently asked questions",
-    "how.faq1Q": "Is Voca free?",
-    "how.faq1A": "Yes - creating an account and applying is completely free.",
     "how.faq2Q": "Who can join?",
     "how.faq2A": "Anyone aged 15 to 30 who wants to learn and grow.",
     "how.faq3Q": "How do organizations get verified?",
@@ -182,7 +181,7 @@ export const translations = {
     "analytics.calls": "Calls",
     "analytics.noData": "Not enough data for this period yet.",
     "nvo.openCalls": "Open opportunities",
-    "nvo.memberSince": "On Voca since",
+    "nvo.memberSince": "On BIP TECH since",
     "nvo.about": "About the organization",
     "action.accept": "Accept",
     "action.reject": "Reject",
@@ -224,7 +223,7 @@ export const translations = {
     "map.subtitle": "In-person opportunities across the country.",
     "map.onlineList": "Online opportunities",
     "detail.addToCalendar": "Add to Google Calendar",
-    "ai.title": "Voca Assistant",
+    "ai.title": "BIP TECH Assistant",
     "ai.greeting": "Hi! Tell me what you're looking for and I'll suggest opportunities.",
     "ai.placeholder": "e.g. IT workshop in Podgorica…",
     "ai.send": "Send",
@@ -344,6 +343,7 @@ export const translations = {
     "toast.loggedOut": "You have been logged out",
   },
   cnr: {
+    "nav.home": "Naslovna",
     "nav.calls": "Pozivi",
     "nav.dashboard": "Kontrolna tabla",
     "nav.profile": "Moj profil",
@@ -386,7 +386,7 @@ export const translations = {
     "landing.statsYouth": "Mladih",
     "landing.statsApplications": "Prijava",
     "landing.testimonials": "Šta kažu učesnici",
-    "landing.howTitle": "Kako Voca funkcioniše",
+    "landing.howTitle": "Kako BIP TECH funkcioniše",
     "landing.howSubtitle": "Tri jednostavna koraka do tvoje sljedeće prilike.",
     "landing.step1Title": "Otkrij",
     "landing.step1Desc":
@@ -402,8 +402,8 @@ export const translations = {
       "Seminari, radionice, kampovi, takmičenja i još mnogo toga.",
     "landing.partnersTitle": "Naši partneri",
     "landing.partnersSubtitle":
-      "NVO i organizacije koje već objavljuju na Voci.",
-    "landing.whyTitle": "Zašto mladi biraju Vocu",
+      "NVO i organizacije koje već objavljuju na BIP TECH platformi.",
+    "landing.whyTitle": "Zašto mladi biraju BIP TECH",
     "landing.why1Title": "Personalizovano",
     "landing.why1Desc": "Tvoj feed prati teme koje te zaista zanimaju.",
     "landing.why2Title": "Besplatno i lako",
@@ -414,9 +414,9 @@ export const translations = {
       "Verifikovane organizacije iz regiona objavljuju prave programe.",
     "landing.why4Title": "Dvojezično",
     "landing.why4Desc":
-      "Koristi Vocu na crnogorskom ili engleskom - promijeni bilo kad.",
+      "Koristi BIP TECH na crnogorskom ili engleskom - promijeni bilo kad.",
     "landing.ctaTitle": "Spreman si da nađeš svoju sljedeću priliku?",
-    "landing.ctaSubtitle": "Pridruži se hiljadama mladih koji rastu uz Vocu.",
+    "landing.ctaSubtitle": "Pridruži se hiljadama mladih koji rastu uz BIP TECH.",
 
     "nav.how": "Kako funkcioniše",
     "guest.bannerTitle": "Pregledaš kao gost",
@@ -425,9 +425,9 @@ export const translations = {
     "guest.register": "Besplatna registracija",
     "guest.login": "Prijava",
     "guest.applyHint": "Besplatna registracija · prijava u jednom kliku",
-    "how.heroTitle": "Kako Voca funkcioniše",
+    "how.heroTitle": "Kako BIP TECH funkcioniše",
     "how.heroSubtitle":
-      "Voca povezuje mlade sa prilikama od NVO - potpuno besplatno.",
+      "BIP TECH povezuje mlade sa prilikama od NVO - potpuno besplatno.",
     "how.youthTitle": "Za mlade",
     "how.nvoTitle": "Za organizacije",
     "how.youth1Title": "Napravi profil",
@@ -449,8 +449,6 @@ export const translations = {
     "how.nvo3Desc":
       "Prihvati, odbij, pošalji poruku i prati sve na jednom mjestu.",
     "how.faqTitle": "Često postavljana pitanja",
-    "how.faq1Q": "Da li je Voca besplatna?",
-    "how.faq1A": "Da - pravljenje naloga i prijava su potpuno besplatni.",
     "how.faq2Q": "Ko može da se pridruži?",
     "how.faq2A": "Svako od 15 do 30 godina ko želi da uči i da se razvija.",
     "how.faq3Q": "Kako se organizacije verifikuju?",
@@ -526,7 +524,7 @@ export const translations = {
     "analytics.calls": "Pozivi",
     "analytics.noData": "Još nema dovoljno podataka za ovaj period.",
     "nvo.openCalls": "Otvoreni pozivi",
-    "nvo.memberSince": "Na Voci od",
+    "nvo.memberSince": "Na BIP TECH od",
     "nvo.about": "O organizaciji",
     "action.accept": "Prihvati",
     "action.reject": "Odbij",
@@ -568,7 +566,7 @@ export const translations = {
     "map.subtitle": "Pozivi uživo širom zemlje.",
     "map.onlineList": "Online pozivi",
     "detail.addToCalendar": "Dodaj u Google Kalendar",
-    "ai.title": "Voca Asistent",
+    "ai.title": "BIP TECH Asistent",
     "ai.greeting": "Zdravo! Reci mi šta tražiš i predložiću ti prilike.",
     "ai.placeholder": "npr. IT radionica u Podgorici…",
     "ai.send": "Pošalji",

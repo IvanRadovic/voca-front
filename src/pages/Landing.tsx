@@ -25,8 +25,8 @@ import type { TranslationKey } from "../i18n/translations";
 const TESTIMONIALS = [
   {
     name: "Ana, 22",
-    en: "Through Voca I found a coding bootcamp that changed my career path completely.",
-    cnr: "Preko Voca pronašla sam programerski kamp koji mi je potpuno promijenio karijeru.",
+    en: "Through BIP TECH I found a coding bootcamp that changed my career path completely.",
+    cnr: "Preko BIP TECH pronašla sam programerski kamp koji mi je potpuno promijenio karijeru.",
   },
   {
     name: "Marko, 19",
@@ -293,7 +293,7 @@ export default function Landing() {
       </section>
 
       <div className="mx-auto max-w-6xl px-4">
-        {/* ---------- Why Voca ---------- */}
+        {/* ---------- Why BIP TECH ---------- */}
         <section className="py-14">
           <h2 className="mb-8 text-center text-2xl font-bold sm:text-3xl">
             {t("landing.whyTitle")}

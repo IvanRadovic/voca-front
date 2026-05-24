@@ -53,7 +53,7 @@ export default function AuthModal() {
       maxWidth={authMode === "login" ? "max-w-md" : "max-w-lg"}
     >
       <h2 className="mb-1 text-xl font-bold">{title}</h2>
-      <p className="mb-5 text-sm text-gray-500 dark:text-gray-400">Voca</p>
+      <p className="mb-5 text-sm text-gray-500 dark:text-gray-400">BIP TECH</p>
 
       {authMode === "login" && <LoginForm onSuccess={handleSuccess} />}
       {authMode === "signup" && <YouthForm onSuccess={handleSuccess} />}

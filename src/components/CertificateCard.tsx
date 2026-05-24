@@ -14,8 +14,8 @@ export default function CertificateCard({ certificate }: { certificate: Certific
   const pdfUrl = `${API}/certificates/${certificate.code}/pdf`;
   const linkedinUrl =
     `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME` +
-    `&name=${encodeURIComponent(certificate.call?.title ?? "Voca certificate")}` +
-    `&organizationName=${encodeURIComponent(certificate.organization ?? "Voca")}` +
+    `&name=${encodeURIComponent(certificate.call?.title ?? "BIP TECH certificate")}` +
+    `&organizationName=${encodeURIComponent(certificate.organization ?? "BIP TECH")}` +
     `&certUrl=${encodeURIComponent(verifyUrl)}&certId=${certificate.code}`;
 
   const copyLink = async () => {
