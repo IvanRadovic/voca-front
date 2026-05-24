@@ -17,6 +17,7 @@ const Browse = lazy(() => import('./pages/Browse'));
 const HowItWorks = lazy(() => import('./pages/HowItWorks'));
 const CallDetails = lazy(() => import('./pages/CallDetails'));
 const NvoPage = lazy(() => import('./pages/NvoPage'));
+const CertificatePage = lazy(() => import('./pages/CertificatePage'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Profile = lazy(() => import('./pages/Profile'));
 const NotFound = lazy(() => import('./pages/NotFound'));
@@ -37,6 +38,7 @@ export default function App() {
                       <Route path="/kako-funkcionise" element={<HowItWorks />} />
                       <Route path="/calls/:id" element={<CallDetails />} />
                       <Route path="/nvo/:id" element={<NvoPage />} />
+                      <Route path="/sertifikat/:code" element={<CertificatePage />} />
                       <Route
                         path="/dashboard"
                         element={

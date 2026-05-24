@@ -5,6 +5,7 @@ import type {
   Application,
   Call,
   Category,
+  Certificate,
   Feedback,
   NvoAnalytics,
   NvoStats,
@@ -137,5 +138,23 @@ export function usePublicNvo(id: string | number | undefined) {
     queryKey: qk.publicNvo(id ?? ''),
     queryFn: () => get<PublicNvo>(`/nvos/${id}`),
     enabled: !!id,
+  });
+}
+
+export function useMyCertificates() {
+  return useQuery({
+    queryKey: qk.myCertificates,
+    queryFn: () => get<{ data: Certificate[] }>('/my/certificates'),
+    select: (res) => res.data,
+  });
+}
+
+export function useCertificate(code: string | undefined) {
+  return useQuery({
+    queryKey: qk.certificate(code ?? ''),
+    queryFn: () => get<{ data: Certificate }>(`/certificates/${code}`),
+    enabled: !!code,
+    retry: false,
+    select: (res) => res.data,
   });
 }

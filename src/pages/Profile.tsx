@@ -7,12 +7,14 @@ import { useLanguage } from "../context/LanguageContext";
 import {
   useCategories,
   useMyApplications,
+  useMyCertificates,
   useMyFeedbacks,
   useMySaved,
 } from "../hooks/queries";
 import { useLeaveFeedback, useUpdateProfile } from "../hooks/mutations";
 import { extractError } from "../lib/api";
 import CallCard from "../components/CallCard";
+import CertificateCard from "../components/CertificateCard";
 import Spinner from "../components/ui/Spinner";
 import Field from "../components/ui/Field";
 import Select from "../components/ui/Select";
@@ -28,7 +30,7 @@ import { formatDate } from "../lib/format";
 import { profileSchema, type ProfileValues } from "../lib/schemas";
 import type { User } from "../types";
 
-type Tab = "profile" | "applications" | "wishlist" | "reviews";
+type Tab = "profile" | "applications" | "wishlist" | "reviews" | "certificates";
 
 export default function Profile() {
   const { t } = useLanguage();
@@ -37,6 +39,7 @@ export default function Profile() {
   const tabs: [Tab, string][] = [
     ["profile", t("nav.profile")],
     ["applications", t("profile.myApplications")],
+    ["certificates", t("profile.myCertificates")],
     ["wishlist", t("profile.wishlist")],
     ["reviews", t("profile.myReviews")],
   ];
@@ -63,6 +66,7 @@ export default function Profile() {
 
       {tab === "profile" && <ProfileForm />}
       {tab === "applications" && <ApplicationsTab />}
+      {tab === "certificates" && <CertificatesTab />}
       {tab === "wishlist" && <WishlistTab />}
       {tab === "reviews" && <ReviewsTab />}
     </div>
@@ -360,6 +364,24 @@ function WishlistTab() {
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {calls.map((c) => (
         <CallCard key={c.id} call={c} />
+      ))}
+    </div>
+  );
+}
+
+/* -------------------- Certificates -------------------- */
+
+function CertificatesTab() {
+  const { t } = useLanguage();
+  const { data: certificates = [], isPending } = useMyCertificates();
+  if (isPending) return <Spinner className="mx-auto mt-10 h-7 w-7" />;
+  if (certificates.length === 0) {
+    return <div className="card p-10 text-center text-gray-500 dark:text-gray-400">{t("cert.empty")}</div>;
+  }
+  return (
+    <div className="grid gap-5 lg:grid-cols-2">
+      {certificates.map((c) => (
+        <CertificateCard key={c.code} certificate={c} />
       ))}
     </div>
   );

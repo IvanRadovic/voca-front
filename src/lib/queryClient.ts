@@ -31,4 +31,6 @@ export const qk = {
   applicants: (id: string | number) =>
     ["call", String(id), "applicants"] as const,
   publicNvo: (id: string | number) => ["nvos", String(id)] as const,
+  myCertificates: ["my", "certificates"] as const,
+  certificate: (code: string) => ["certificate", code] as const,
 };

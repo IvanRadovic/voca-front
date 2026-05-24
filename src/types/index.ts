@@ -129,6 +129,14 @@ export interface Feedback {
   call?: { id: number; title: string };
 }
 
+export interface Certificate {
+  code: string;
+  issued_at: string;
+  recipient?: string;
+  organization?: string;
+  call?: { id: number; title: string; type: CallType };
+}
+
 export interface Paginated<T> {
   data: T[];
   links: { first: string; last: string; prev: string | null; next: string | null };
