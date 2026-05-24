@@ -6,6 +6,8 @@ import { useLanguage } from '../context/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
 import { useModal } from '../context/ModalContext';
 import Avatar from './ui/Avatar';
+import meFlag from 'flag-icons/flags/4x3/me.svg';
+import usFlag from 'flag-icons/flags/4x3/us.svg';
 
 export default function Navbar() {
   const { user, isAuthenticated, isNvo, logout } = useAuth();
@@ -59,30 +61,6 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <button
-            onClick={toggleLang}
-            className="rounded-lg border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-600 transition hover:border-brand-400 dark:border-gray-700 dark:text-gray-300"
-            aria-label="Toggle language"
-          >
-            {lang === 'en' ? 'EN' : 'CNR'}
-          </button>
-          <button
-            onClick={toggleTheme}
-            className="rounded-lg border border-gray-200 p-1.5 text-gray-600 transition hover:border-brand-400 dark:border-gray-700 dark:text-gray-300"
-            aria-label="Toggle theme"
-          >
-            {dark ? (
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="4" />
-                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" strokeLinecap="round" />
-              </svg>
-            ) : (
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            )}
-          </button>
-
           {isAuthenticated ? (
             <div className="relative">
               <button onClick={() => setMenuOpen((p) => !p)} className="flex items-center gap-2">
@@ -123,6 +101,36 @@ export default function Navbar() {
               </button>
             </div>
           )}
+
+          {/* Language + theme toggles, after the auth actions */}
+          <button
+            onClick={toggleLang}
+            className="flex items-center rounded-lg border border-gray-200 p-1 transition hover:border-brand-400 dark:border-gray-700"
+            aria-label="Toggle language"
+            title={lang === 'cnr' ? 'Crnogorski' : 'English'}
+          >
+            <img
+              src={lang === 'cnr' ? meFlag : usFlag}
+              alt={lang === 'cnr' ? 'CNR' : 'EN'}
+              className="h-4 w-6 rounded-sm object-cover"
+            />
+          </button>
+          <button
+            onClick={toggleTheme}
+            className="rounded-lg border border-gray-200 p-1.5 text-gray-600 transition hover:border-brand-400 dark:border-gray-700 dark:text-gray-300"
+            aria-label="Toggle theme"
+          >
+            {dark ? (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" strokeLinecap="round" />
+              </svg>
+            ) : (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            )}
+          </button>
         </div>
       </div>
     </header>
