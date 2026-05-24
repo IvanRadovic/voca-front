@@ -37,6 +37,9 @@ export const translations = {
 
     "landing.recommended": "Recommended for you",
     "landing.latest": "Latest opportunities",
+    "landing.featuredBadge": "🔥 Open now",
+    "landing.featuredTitle": "Opportunities for you",
+    "landing.featuredSubtitle": "Seminars, workshops, camps, competitions and more — find one and apply in a single click.",
     "landing.categories": "Explore by category",
     "landing.statsNvos": "NGOs",
     "landing.statsCalls": "Opportunities",
@@ -362,6 +365,9 @@ export const translations = {
 
     "landing.recommended": "Preporučeno za tebe",
     "landing.latest": "Najnoviji pozivi",
+    "landing.featuredBadge": "🔥 Aktuelno",
+    "landing.featuredTitle": "Prilike za tebe",
+    "landing.featuredSubtitle": "Seminari, radionice, kampovi, takmičenja i još mnogo toga — pronađi i prijavi se u jednom kliku.",
     "landing.categories": "Istraži po kategoriji",
     "landing.statsNvos": "NVO",
     "landing.statsCalls": "Poziva",

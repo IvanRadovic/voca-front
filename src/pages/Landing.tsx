@@ -87,6 +87,11 @@ export default function Landing() {
       ]
     : [];
 
+  // Opportunities are the headline: personalized for youth, latest otherwise.
+  const featured = recommended.length > 0 ? recommended : latest;
+  const featuredHeading =
+    recommended.length > 0 ? t("landing.recommended") : t("landing.featuredTitle");
+
   return (
     <div className="animate-fade-in">
       {/* ---------- Hero (split: text + illustration) ---------- */}
@@ -159,6 +164,49 @@ export default function Landing() {
         </section>
       )}
 
+      {/* ---------- Featured opportunities (headline section) ---------- */}
+      <section className="relative overflow-hidden border-b border-gray-100 bg-gradient-to-b from-white to-brand-50/50 py-14 dark:border-gray-800 dark:from-gray-950 dark:to-brand-900/10">
+        {/* decorative blobs */}
+        <div className="pointer-events-none absolute -left-16 top-10 h-56 w-56 rounded-full bg-brand-200/30 blur-3xl dark:bg-brand-700/20" />
+        <div className="pointer-events-none absolute -right-16 bottom-0 h-56 w-56 rounded-full bg-sky-200/30 blur-3xl dark:bg-sky-800/20" />
+
+        <div className="relative mx-auto max-w-6xl px-4">
+          <div className="mb-8 text-center">
+            <span className="chip animate-fade-in bg-brand-600 px-3 py-1 text-sm font-semibold text-white shadow-card">
+              {t("landing.featuredBadge")}
+            </span>
+            <h2 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">{featuredHeading}</h2>
+            <p className="mx-auto mt-2 max-w-2xl text-gray-500 dark:text-gray-400">
+              {t("landing.featuredSubtitle")}
+            </p>
+          </div>
+
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <Spinner className="h-8 w-8" />
+            </div>
+          ) : (
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {featured.slice(0, 8).map((call, i) => (
+                <div
+                  key={call.id}
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${i * 80}ms`, animationFillMode: "backwards" }}
+                >
+                  <CallCard call={call} />
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="mt-9 text-center">
+            <button onClick={() => navigate("/calls")} className="btn-primary px-7 py-3 text-base">
+              {t("hero.browse")} →
+            </button>
+          </div>
+        </div>
+      </section>
+
       <div className="mx-auto max-w-6xl px-4">
         {/* ---------- How it works ---------- */}
         <section className="py-14">
@@ -221,55 +269,6 @@ export default function Landing() {
           </div>
         </section>
 
-        {loading && (
-          <div className="flex justify-center py-12">
-            <Spinner className="h-8 w-8" />
-          </div>
-        )}
-
-        {/* ---------- Recommended ---------- */}
-        {recommended.length > 0 && (
-          <section className="py-12">
-            <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-2xl font-bold sm:text-3xl">
-                {t("landing.recommended")}
-              </h2>
-              <Link
-                to="/calls"
-                className="text-sm font-medium text-brand-600 hover:underline"
-              >
-                {t("common.viewAll")}
-              </Link>
-            </div>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {recommended.map((call) => (
-                <CallCard key={call.id} call={call} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ---------- Latest ---------- */}
-        {!loading && latest.length > 0 && (
-          <section className="py-12">
-            <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-2xl font-bold sm:text-3xl">
-                {t("landing.latest")}
-              </h2>
-              <Link
-                to="/calls"
-                className="text-sm font-medium text-brand-600 hover:underline"
-              >
-                {t("common.viewAll")}
-              </Link>
-            </div>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {latest.map((call) => (
-                <CallCard key={call.id} call={call} />
-              ))}
-            </div>
-          </section>
-        )}
       </div>
 
       {/* ---------- Partners (NGOs) slider ---------- */}
