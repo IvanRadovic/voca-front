@@ -1,10 +1,20 @@
 # syntax=docker/dockerfile:1.7
+#
+# BIP TECH frontend (Vite + React) - production Dockerfile.
+# Pass VITE_API_URL as a build arg in Coolify ("Build args" section) so the
+# correct API base URL is baked into the bundle; SPAs cannot read env at
+# runtime.
 
 FROM node:22-alpine AS builder
 WORKDIR /app
 
+# Build-time configuration. The default keeps `docker build` working without
+# args; Coolify should override this for prod.
+ARG VITE_API_URL=http://localhost:8000/api
+ENV VITE_API_URL=${VITE_API_URL}
+
 COPY package*.json ./
-RUN npm ci --include=dev
+RUN --mount=type=cache,target=/root/.npm npm ci --include=dev
 
 COPY . .
 RUN npm run build
