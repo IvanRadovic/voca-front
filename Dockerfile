@@ -29,7 +29,9 @@ WORKDIR /usr/share/nginx/html
 COPY --from=builder /app/dist/ /usr/share/nginx/html/
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-RUN chown -R app:app /usr/share/nginx/html /var/cache/nginx /var/run /var/log/nginx /etc/nginx/conf.d && \
+RUN touch /run/nginx.pid && \
+    chown -R app:app /usr/share/nginx/html /var/cache/nginx /var/log/nginx /etc/nginx/conf.d /run/nginx.pid && \
+    chown app:app /run && \
     chmod -R 755 /usr/share/nginx/html
 
 USER app
